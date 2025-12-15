@@ -1,0 +1,37 @@
+/* Base styles for the reusable button component */
+.lc-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 0.5rem 0.9rem;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background: #fff;
+	color: #222;
+	font: inherit;
+	cursor: pointer;
+	transition: background 120ms ease, border-color 120ms ease;
+}
+
+.lc-button:hover {
+	background: #f5f5f5;
+	border-color: #bbb;
+}
+
+.lc-button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Example variant you can use via className */
+.lc-button--primary {
+	background: #0d6efd;
+	color: #fff;
+	border-color: #0d6efd;
+}
+
+.lc-button--primary:hover {
+	background: #0b5ed7;
+	border-color: #0b5ed7;
+}

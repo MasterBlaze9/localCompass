@@ -1,10 +1,12 @@
 import createButton from '../../components/button/button.js';
+import "./post.css";
 
-function render(items = []) {
-  const container = document.querySelector('#container');
-  if (!container) return;
+function render(items) {
+const container = document.getElementById('container');
+if (!container) return;
 
-  container.innerHTML = '';
+
+container.innerHTML = '';
 
   const list = document.createElement('div');
   list.className = 'posts-list';
@@ -19,12 +21,12 @@ function render(items = []) {
   }
 
   items.forEach(post => {
-    const author = post.author || post.name || post.user || 'Unknown';
-    const timeAgo = post.timeAgo || post.createdAt || post.time || '';
-    const title = post.title || post.subject || post.headline || '';
-    const bodyText = post.body || post.description || post.details || '';
-    const location = post.location || post.place || '';
-    const responses = post.responses || post.replies || post.count || 0;
+    const user_id = post.user_id ;
+    const timeAgo = post.timeAgo ;
+    const title = post.title ;
+    const bodyText = post.body ;
+    const location = post.location ;
+    const replys = post.replys ;
 
     const card = document.createElement('article');
     card.className = 'post-card';
@@ -38,20 +40,20 @@ function render(items = []) {
 
     const avatar = document.createElement('div');
     avatar.className = 'post-avatar';
-    avatar.textContent = author[0]?.toUpperCase() || 'U';
+    
 
     const metaText = document.createElement('div');
     metaText.className = 'post-meta-text';
 
-    const authorEl = document.createElement('div');
-    authorEl.className = 'post-author';
-    authorEl.textContent = author;
+    const authorElement = document.createElement('div');
+    authorElement.className = 'post-author';
+    authorElement.textContent = user_id;
 
-    const timeEl = document.createElement('div');
-    timeEl.className = 'post-time';
-    timeEl.textContent = timeAgo;
+    const timeElement = document.createElement('div');
+    timeElement.className = 'post-time';
+    timeElement.textContent = timeAgo;
 
-    metaText.append(authorEl, timeEl);
+    metaText.append(authorElement, timeElement);
     meta.append(avatar, metaText);
     header.appendChild(meta);
 
@@ -94,7 +96,7 @@ function render(items = []) {
       label: 'Reply',
       className: 'lc-button lc-button--primary',
       onClick: () => {
-        console.log('Reply clicked for post:', post);
+         
       }
     });
 

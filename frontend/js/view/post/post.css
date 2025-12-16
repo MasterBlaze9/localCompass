@@ -137,3 +137,157 @@
     justify-content: flex-end;
     width: 100%;
 }
+
+
+.backHomeButton {
+
+    color: #212529;
+    font-size: 20px;
+    font-family: Roboto;
+    font-weight: 400;
+    line-height: 30px;
+    word-wrap: break-word
+}
+
+
+.postsButton {
+
+    width: 48px;
+    height: 48px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: #0DCAF0;
+    overflow: hidden;
+    border-radius: 8px;
+    outline: 1px #0DCAF0 solid;
+    outline-offset: -1px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    display: inline-flex
+}
+
+
+
+.neighborsButon {
+
+    width: 48px;
+    height: 48px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: #0DCAF0;
+    overflow: hidden;
+    border-radius: 8px;
+    outline: 1px #0DCAF0 solid;
+    outline-offset: -1px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    display: inline-flex
+
+}
+
+.newPostButton {
+
+    width: 48px;
+    height: 48px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: #0DCAF0;
+    overflow: hidden;
+    border-radius: 8px;
+    outline: 1px #0DCAF0 solid;
+    outline-offset: -1px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    display: inline-flex
+
+}
+
+
+.allPostButton {
+
+    width: 48px;
+    height: 48px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: #0DCAF0;
+    overflow: hidden;
+    border-radius: 8px;
+    outline: 1px #0DCAF0 solid;
+    outline-offset: -1px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    display: inline-flex
+
+}
+
+.mutualAidButton {
+
+    width: 48px;
+    height: 48px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: #0DCAF0;
+    overflow: hidden;
+    border-radius: 8px;
+    outline: 1px #0DCAF0 solid;
+    outline-offset: -1px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    display: inline-flex
+
+}
+
+.socialActivitiesButton {
+
+    width: 48px;
+    height: 48px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: #0DCAF0;
+    overflow: hidden;
+    border-radius: 8px;
+    outline: 1px #0DCAF0 solid;
+    outline-offset: -1px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    display: inline-flex
+
+}
+
+.assistanceButton {
+
+    width: 48px;
+    height: 48px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: #0DCAF0;
+    overflow: hidden;
+    border-radius: 8px;
+    outline: 1px #0DCAF0 solid;
+    outline-offset: -1px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    display: inline-flex
+
+}

@@ -163,6 +163,77 @@ const adminService = {
             console.error('Error deleting event:', error);
             throw error;
         }
+    },
+
+    // ========================================
+    // USERS MANAGEMENT
+    // ========================================
+    
+    // Fetch all users
+    async getAllUsers() {
+        try {
+            const response = await fetch(`${BASE_URL}/users`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            return await response.json();
+            
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            throw error;
+        }
+    },
+    
+    // Add new user (by username)
+    async addUser(username) {
+        try {
+            const response = await fetch(`${BASE_URL}/users`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            return await response.json();
+            
+        } catch (error) {
+            console.error('Error adding user:', error);
+            throw error;
+        }
+    },
+    
+    // Delete a user
+    async deleteUser(userId) {
+        try {
+            const response = await fetch(`${BASE_URL}/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            return await response.json();
+            
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            throw error;
+        }
     }
 
 };

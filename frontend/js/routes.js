@@ -7,6 +7,10 @@ export default {
         path: '/events',
         controller: 'eventController'
     },
+    admin: {
+        path: '/admin',
+        controller: 'adminController'
+    },
     currentPath: {
         path: '',
         controller: ''

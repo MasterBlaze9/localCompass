@@ -1,0 +1,149 @@
+/* Admin Panel Styles - Mobile First */
+
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.admin-container h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.admin-container > p {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* Posts List */
+.posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Post Card */
+.post-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.post-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* User Info Section */
+.post-card > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.post-card strong {
+    font-size: 15px;
+    color: #2c3e50;
+}
+
+.post-card > div:first-child span {
+    font-size: 13px;
+}
+
+/* Category Badge */
+.post-card > span {
+    display: inline-block;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+/* Title */
+.post-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 12px 0 8px 0;
+    line-height: 1.4;
+}
+
+/* Description */
+.post-card > p {
+    font-size: 15px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+/* Footer (location & responses) */
+.post-card > div:nth-last-child(2) {
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.post-card > div:nth-last-child(2) span {
+    font-size: 14px;
+}
+
+/* Delete Button Styling */
+.post-card .lc-button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 16px;
+    font-weight: 600;
+}
+
+/* Empty State */
+.posts-list > p {
+    text-align: center;
+    padding: 60px 20px;
+    color: #7f8c8d;
+    font-size: 16px;
+}
+
+/* Tablet & Desktop */
+@media (min-width: 768px) {
+    .admin-container {
+        padding: 30px;
+    }
+    
+    .admin-container h1 {
+        font-size: 32px;
+    }
+    
+    .post-card {
+        padding: 24px;
+    }
+    
+    .post-card h3 {
+        font-size: 22px;
+    }
+    
+    .post-card .lc-button {
+        width: auto;
+        min-width: 120px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .admin-container {
+        padding: 40px;
+    }
+    
+    .admin-container h1 {
+        font-size: 36px;
+    }
+}

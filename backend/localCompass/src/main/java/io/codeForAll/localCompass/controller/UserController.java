@@ -39,8 +39,10 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getUsersByBuilding(@RequestParam Long buildingId) {
-        List<User> users = userRepository.findByBuildingId(buildingId);
+    public ResponseEntity<List<UserDTO>> getUsersByBuilding(@RequestParam(required = false) Long buildingId) {
+        List<User> users = (buildingId != null)
+                ? userRepository.findByBuildingId(buildingId)
+                : userRepository.findAll();
         List<UserDTO> response = users.stream()
                 .map(UserDTO::new)
                 .collect(Collectors.toList());

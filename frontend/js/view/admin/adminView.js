@@ -1,6 +1,5 @@
 // Admin View - renders admin panel HTML
 import createButton from '../../components/button/button.js';
-import adminController from '../../controller/adminController.js';
 import "./admin.css"
 
 function render(posts, onDelete) {
@@ -10,7 +9,6 @@ function render(posts, onDelete) {
     // Main wrapper
     const adminDiv = document.createElement('div');
     adminDiv.className = 'admin-container';
-    adminDiv.style.padding = '20px';
     
     // Header
     const header = document.createElement('h1');
@@ -47,25 +45,51 @@ function render(posts, onDelete) {
 
 // Create a single post card element
 function createPostCard(post, onDelete) {
+    // Card container
     const card = document.createElement('div');
     card.className = 'post-card';
-    card.style.border = '1px solid #ddd';
-    card.style.padding = '15px';
-    card.style.marginBottom = '15px';
-    card.style.borderRadius = '8px';
     
-    // User info
+    // Post header - Avatar + Name + Status + Time
     const userInfo = document.createElement('div');
-    userInfo.style.marginBottom = '10px';
+    userInfo.className = 'post-header';
     
+    // Avatar
+    const avatar = document.createElement('div');
+    avatar.className = 'user-avatar';
+    avatar.style.backgroundColor = getAvatarColor(post.authorName);
+    avatar.textContent = getInitials(post.authorName);
+    userInfo.appendChild(avatar);
+    
+    // Name and status container
+    const nameStatusContainer = document.createElement('div');
+    nameStatusContainer.className = 'name-status-container';
+    
+    // User name
     const userName = document.createElement('strong');
-    userName.textContent = post.userName || post.author || 'Anonymous';
-    userInfo.appendChild(userName);
+    userName.className = 'post-author-name';
+    userName.textContent = post.authorName;
+    nameStatusContainer.appendChild(userName);
     
+    // Apartment number
+    if (post.authorUnit || post.apartment || post.apartment_number) {
+        const apartment = document.createElement('span');
+        apartment.className = 'post-author-unit';
+        apartment.textContent = `(Apt ${post.authorUnit || post.apartment || post.apartment_number})`;
+        nameStatusContainer.appendChild(apartment);
+    }
+    
+    // Status badge
+    const statusBadge = document.createElement('span');
+    const status = post.status || 'Open';
+    statusBadge.className = `status-badge status-${status.toLowerCase().replace(' ', '-')}`;
+    statusBadge.textContent = status;
+    nameStatusContainer.appendChild(statusBadge);
+    
+    userInfo.appendChild(nameStatusContainer);
+    
+    // Time
     const timeAgo = document.createElement('span');
-    timeAgo.style.color = '#666';
-    timeAgo.style.fontSize = '14px';
-    timeAgo.style.marginLeft = '10px';
+    timeAgo.className = 'post-time';
     timeAgo.textContent = getTimeAgo(post.createdAt || post.timestamp);
     userInfo.appendChild(timeAgo);
     
@@ -74,56 +98,54 @@ function createPostCard(post, onDelete) {
     // Category badge
     if (post.category) {
         const badge = document.createElement('span');
-        badge.style.backgroundColor = getCategoryColor(post.category);
-        badge.style.color = 'white';
-        badge.style.padding = '4px 10px';
-        badge.style.borderRadius = '12px';
-        badge.style.fontSize = '12px';
+        badge.className = `category-badge category-${post.category}`;
         badge.textContent = getCategoryLabel(post.category);
         card.appendChild(badge);
     }
     
     // Title
     const title = document.createElement('h3');
+    title.className = 'post-title';
     title.textContent = post.title;
-    title.style.margin = '10px 0';
     card.appendChild(title);
     
     // Description
     const description = document.createElement('p');
+    description.className = 'post-description';
     description.textContent = post.description;
-    description.style.color = '#555';
     card.appendChild(description);
     
-    // Footer (location & responses)
+    // Footer
     const footer = document.createElement('div');
-    footer.style.marginTop = '10px';
-    footer.style.fontSize = '14px';
-    footer.style.color = '#666';
+    footer.className = 'post-footer';
     
     const location = document.createElement('span');
+    location.className = 'post-location';
     location.textContent = `📍 ${post.location || 'No location'}`;
     footer.appendChild(location);
     
     const responses = document.createElement('span');
-    responses.style.marginLeft = '15px';
+    responses.className = 'post-responses';
     responses.textContent = `💬 ${post.responses || 0} responses`;
     footer.appendChild(responses);
     
     card.appendChild(footer);
     
-    // Delete button using your button component
+    // Delete button
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'post-actions';
+    
     const deleteBtn = createButton({
         label: '🗑️ Delete',
         className: 'lc-button',
         onClick: () => onDelete(post.post_id)
     });
-    deleteBtn.style.marginTop = '10px';
     deleteBtn.style.backgroundColor = '#dc3545';
     deleteBtn.style.color = 'white';
     deleteBtn.style.border = 'none';
     
-    card.appendChild(deleteBtn);
+    actionsDiv.appendChild(deleteBtn);
+    card.appendChild(actionsDiv);
     
     return card;
 }
@@ -206,6 +228,43 @@ function createNavButtons() {
     nav.appendChild(usersBtn);
     
     return nav;
+}
+
+// Helper: Get status color
+function getStatusColor(status) {
+    const colors = {
+        'Open': '#28a745',      // Green
+        'In Progress': '#ffc107', // Yellow
+        'Closed': '#dc3545'     // Red
+    };
+    return colors[status] || '#28a745'; // Default to Open (green)
+}
+
+// Helper: Get initials from name
+function getInitials(name) {
+    if (!name) return '?';
+    const parts = name.trim().split(' ');
+    if (parts.length === 1) {
+        return parts[0].charAt(0).toUpperCase();
+    }
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+}
+
+// Helper: Get avatar color based on name
+function getAvatarColor(name) {
+    const colors = [
+        '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', 
+        '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'
+    ];
+    
+    if (!name) return colors[0];
+    
+    // Generate color based on name
+    const hash = name.split('').reduce((acc, char) => {
+        return char.charCodeAt(0) + ((acc << 5) - acc);
+    }, 0);
+    
+    return colors[Math.abs(hash) % colors.length];
 }
 
 export default { render };

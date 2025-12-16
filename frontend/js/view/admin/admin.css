@@ -40,81 +40,146 @@
     transform: translateY(-2px);
 }
 
-/* User Info Section */
-.post-card > div:first-child {
+/* Post Header */
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+/* Avatar */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+/* Name and Status Container */
+.name-status-container {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #f0f0f0;
+    flex: 1;
 }
 
-.post-card strong {
-    font-size: 15px;
+.post-author-name {
+    font-size: 18px;
+    font-weight: 600;
     color: #2c3e50;
 }
 
-.post-card > div:first-child span {
+.post-author-unit {
+    color: #7f8c8d;
+    font-size: 15px;
+}
+
+/* Status Badge */
+.status-badge {
+    padding: 5px 14px;
+    border-radius: 14px;
     font-size: 13px;
+    font-weight: 600;
+    color: white;
+}
+
+.status-open {
+    background-color: #28a745;
+}
+
+.status-in-progress {
+    background-color: #ffc107;
+}
+
+.status-closed {
+    background-color: #dc3545;
+}
+
+/* Post Time */
+.post-time {
+    color: #95a5a6;
+    font-size: 14px;
+    white-space: nowrap;
 }
 
 /* Category Badge */
-.post-card > span {
+.category-badge {
     display: inline-block;
-    margin-bottom: 12px;
-    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: white;
+    margin-bottom: 10px;
 }
 
-/* Title */
-.post-card h3 {
-    font-size: 20px;
+.category-mutual-aid {
+    background-color: #2196F3;
+}
+
+.category-social {
+    background-color: #4CAF50;
+}
+
+.category-assistance {
+    background-color: #9C27B0;
+}
+
+/* Post Title */
+.post-title {
+    font-size: 18px;
     font-weight: 700;
     color: #2c3e50;
-    margin: 12px 0 8px 0;
-    line-height: 1.4;
+    margin: 10px 0;
 }
 
-/* Description */
-.post-card > p {
+/* Post Description */
+.post-description {
     font-size: 15px;
     color: #555;
     line-height: 1.6;
     margin-bottom: 12px;
 }
 
-/* Footer (location & responses) */
-.post-card > div:nth-last-child(2) {
+/* Post Footer */
+.post-footer {
+    display: flex;
+    gap: 20px;
     padding-top: 12px;
     border-top: 1px solid #f0f0f0;
     margin-top: 12px;
-    margin-bottom: 12px;
-    display: flex;
-    gap: 20px;
+    font-size: 14px;
+    color: #666;
     flex-wrap: wrap;
 }
 
-.post-card > div:nth-last-child(2) span {
-    font-size: 14px;
+.post-location,
+.post-responses {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-/* Delete Button Styling */
-.post-card .lc-button {
-    width: 100%;
-    margin-top: 12px;
-    padding: 10px 16px;
-    font-weight: 600;
+/* Delete Button Container */
+.post-actions {
+    margin-top: 15px;
 }
 
 /* Empty State */
-.posts-list > p {
+.empty-state {
     text-align: center;
     padding: 60px 20px;
     color: #7f8c8d;
     font-size: 16px;
 }
 
-/* Tablet & Desktop */
+/* Responsive - Tablet */
 @media (min-width: 768px) {
     .admin-container {
         padding: 30px;
@@ -128,16 +193,12 @@
         padding: 24px;
     }
     
-    .post-card h3 {
-        font-size: 22px;
-    }
-    
-    .post-card .lc-button {
-        width: auto;
-        min-width: 120px;
+    .post-title {
+        font-size: 20px;
     }
 }
 
+/* Responsive - Desktop */
 @media (min-width: 1024px) {
     .admin-container {
         padding: 40px;

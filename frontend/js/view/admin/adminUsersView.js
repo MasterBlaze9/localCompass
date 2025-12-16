@@ -63,16 +63,10 @@ function createUserCard(user, onDelete) {
     userHeader.style.alignItems = 'center';
     
     const username = document.createElement('h3');
-    username.textContent = user.username || user.name || 'Unknown User';
+    username.textContent = user.firstName + " " + user.lastName || user.name || 'Unknown User';
     username.style.margin = '0';
     
-    const userId = document.createElement('span');
-    userId.style.color = '#666';
-    userId.style.fontSize = '14px';
-    userId.textContent = `ID: ${user.user_id || user.id}`;
-    
     userHeader.appendChild(username);
-    userHeader.appendChild(userId);
     card.appendChild(userHeader);
     
     // User details

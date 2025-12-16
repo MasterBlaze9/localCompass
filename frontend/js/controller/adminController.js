@@ -1,7 +1,10 @@
 // Admin Controller - coordinates admin panel logic
 import adminView from '../view/admin/adminView.js';
-import adminService from '../service/adminService.js';
 import adminEventsView from '../view/admin/adminEventsView.js';
+import createAddUserModal from '../components/addUserModal/addUserModal.js';
+import postService from '../service/postService.js';
+import eventService from '../service/eventService.js';
+import userService from '../service/userService.js';
 
 // Store posts data
 let posts = [];
@@ -14,7 +17,7 @@ export async function init() {
         showLoading();
         
         // Load posts by default
-        posts = await adminService.getAllPosts();
+        posts = await postService.getAllPosts();
         console.log('Posts loaded:', posts);
         adminView.render(posts, handleDeletePost);
         
@@ -30,7 +33,7 @@ async function handleDeletePost(postId) {
     if (!confirmed) return;
     
     try {
-        await adminService.deletePost(postId);
+        await postService.deletePost(postId);
         
         // Remove from local array
         posts = posts.filter(post => post.post_id !== postId);
@@ -86,7 +89,7 @@ export async function initEvents() {
         showLoading();
         
         // Fetch events from backend
-        events = await adminService.getAllEvents();
+        events = await eventService.getAllEvents();
         console.log('Events loaded:', events);
         
         // Render events view
@@ -104,7 +107,7 @@ async function handleDeleteEvent(eventId) {
     if (!confirmed) return;
     
     try {
-        await adminService.deleteEvent(eventId);
+        await eventService.deleteEvent(eventId);
         
         // Remove from local array
         events = events.filter(event => event.event_id !== eventId);
@@ -169,7 +172,7 @@ export async function initUsers() {
         showLoading();
         
         // Fetch users from backend
-        users = await adminService.getAllUsers();
+        users = await userService.getAllUsers();
         console.log('Users loaded:', users);
         
         // Import users view
@@ -186,25 +189,33 @@ export async function initUsers() {
 
 // Handle add user action
 async function handleAddUser() {
-    const username = prompt('Enter username:');
-    if (!username || username.trim() === '') return;
-    
-    try {
-        const newUser = await adminService.addUser(username.trim());
-        
-        // Add to local array
-        users.push(newUser);
-        
-        // Re-render
-        const adminUsersView = await import('../view/admin/adminUsersView.js');
-        adminUsersView.default.render(users, handleDeleteUser, handleAddUser);
-        
-        alert('User added!');
-        
-    } catch (error) {
-        console.error('Error adding user:', error);
-        alert('Failed to add user');
-    }
+    // Open modal
+    createAddUserModal(
+        // onConfirm callback - receives { email, phone }
+        async (data) => {
+            try {
+                // Call backend with email or phone
+                const newUser = await userService.addUser(data);
+                
+                // Add to local array
+                users.push(newUser);
+                
+                // Re-render
+                const adminUsersView = await import('../view/admin/adminUsersView.js');
+                adminUsersView.default.render(users, handleDeleteUser, handleAddUser);
+                
+                alert('User added successfully!');
+                
+            } catch (error) {
+                console.error('Error adding user:', error);
+                alert('Failed to add user');
+            }
+        },
+        // onCancel callback (optional)
+        () => {
+            console.log('Add user cancelled');
+        }
+    );
 }
 
 // Handle delete user action
@@ -213,7 +224,7 @@ async function handleDeleteUser(userId) {
     if (!confirmed) return;
     
     try {
-        await adminService.deleteUser(userId);
+        await userService.deleteUser(userId);
         
         // Remove from local array
         users = users.filter(user => user.user_id !== userId);

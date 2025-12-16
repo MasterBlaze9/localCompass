@@ -1,13 +1,16 @@
-const BASE_URL = 'https://53d27f99-4eb8-4287-ab9f-5476af247510.mock.pstmn.io';
+import auth from './authService.js'
+const BASE_URL = '/api';
 
 const postService = {
+
     // Fetch all posts from backend
     async getAllPosts() {
         try {
             const response = await fetch(`${BASE_URL}/posts`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...auth.getAuthHeader()
                 }
             });
 
@@ -21,7 +24,28 @@ const postService = {
             console.error('Error fetching posts:', error);
             throw error;
         }
-    },
+  },
+
+  // Create a new post
+  async createPost(data) {
+    try {
+      const response = await fetch(`${BASE_URL}/posts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...auth.getAuthHeader()
+        },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating post:', error);
+      throw error;
+    }
+  },
 
     // Delete a post by ID
     async deletePost(postId) {
@@ -29,7 +53,8 @@ const postService = {
             const response = await fetch(`${BASE_URL}/posts/${postId}`, {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...auth.getAuthHeader()
                 }
             });
 

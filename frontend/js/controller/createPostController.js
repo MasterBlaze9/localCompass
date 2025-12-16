@@ -1,5 +1,5 @@
 import createPostView from "../view/createPost/createPostView";
-import createPostService from "../service/createPostService.js";
+import postService from "../service/postService.js";
 
 export function init() {
     createPostView.render();

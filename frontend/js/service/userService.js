@@ -1,5 +1,6 @@
 // Admin Service - handles API calls to backend
-const BASE_URL = 'https://53d27f99-4eb8-4287-ab9f-5476af247510.mock.pstmn.io';
+import auth from './authService.js'
+const BASE_URL = '/api';
 
 const userService = {
     // ========================================
@@ -12,7 +13,8 @@ const userService = {
             const response = await fetch(`${BASE_URL}/users`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...auth.getAuthHeader()
                 }
             });
 
@@ -34,7 +36,8 @@ const userService = {
             const response = await fetch(`${BASE_URL}/users/${userId}`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...auth.getAuthHeader()
                 }
             });
 
@@ -51,12 +54,13 @@ const userService = {
     },
 
     // Add new user (by username)
-    async addUser(username) {
+    async addUser(userData) {
         try {
         const response = await fetch(`${BASE_URL}/users`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...auth.getAuthHeader()
             },
             body: JSON.stringify(userData)
         });
@@ -73,13 +77,28 @@ const userService = {
         }
     },
 
+    async getUserByEmail(email) {
+        const response = await fetch(`${BASE_URL}/users/by-email?email=${encodeURIComponent(email)}`, {
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+        });
+        return this.handleResponse(response);
+    },
+
+    async getUserByPhone(phoneNumber) {
+        const response = await fetch(`${BASE_URL}/users/by-phone?phoneNumber=${encodeURIComponent(phoneNumber)}`, {
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+        });
+        return this.handleResponse(response);
+    },
+
     // Delete a user by ID
     async deleteUser(userId) {
         try {
             const response = await fetch(`${BASE_URL}/users/${userId}`, {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...auth.getAuthHeader()
                 }
             });
 
@@ -119,15 +138,21 @@ const userService = {
             password
         };
 
-        const response = await fetch(`${API_BASE}/login`, {
-            method: 'POST',
+        // Basic auth: store token then verify with a protected endpoint
+        const basic = btoa(`${identifier}:${password}`);
+        auth.setAuth(basic);
+        const response = await fetch(`${BASE_URL}/posts`, {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
+                'Content-Type': 'application/json',
+                ...auth.getAuthHeader()
+            }
         });
-
-        return this.handleResponse(response);
+        if (!response.ok) {
+            auth.clearAuth();
+            throw new Error('Invalid credentials');
+        }
+        return { ok: true };
     },
 
     /**
@@ -141,10 +166,11 @@ const userService = {
             throw new Error('Either email or phone number is required');
         }
 
-        const response = await fetch(`${API_BASE}/register`, {
+        const response = await fetch(`${BASE_URL}/users`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...auth.getAuthHeader()
             },
             body: JSON.stringify(user)
         });
@@ -152,3 +178,5 @@ const userService = {
         return this.handleResponse(response);
     }
 };
+
+export default userService;

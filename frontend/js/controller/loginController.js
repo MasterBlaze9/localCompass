@@ -1,4 +1,5 @@
 import loginView from '../view/login/loginView.js';
+import auth from '../service/authService.js';
 
 
 function isEmail(value) {
@@ -41,6 +42,13 @@ export function init() {
       password
     };
 
-    console.log('Login payload:', loginPayload);
+    const basic = btoa(`${identifier}:${password}`);
+    auth.setAuth(basic);
+    fetch('/api/posts', { headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() } })
+      .then(r => {
+        if (!r.ok) throw new Error('Invalid credentials');
+        window.location.href = '/';
+      })
+      .catch(() => { auth.clearAuth(); alert('Login failed'); });
   });
 }

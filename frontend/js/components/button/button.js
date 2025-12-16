@@ -9,6 +9,7 @@ export default function createButton({
 	className = 'lc-button',
 	type = 'button',
 	disabled = false,
+	//border radius could be added later if needed
 }) {
 	const btn = document.createElement('button');
 	btn.type = type;

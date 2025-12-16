@@ -1,21 +1,28 @@
 import routes from "./routes.js";
+import auth from "./service/authService.js";
 
 function setCurrentRoute({ path, controller }) {
     routes.currentPath.path = path;
     routes.currentPath.controller = controller;
 }
 
-function navigate(path, firstload = false) {
+function navigate(path, firstLoad = false) {
     if (path === routes.currentPath.path) {
         return
     }
 
     const routeKey = Object.keys(routes).find(key => routes[key].path === path)
-    const route = routes[routeKey] || routes.home;
+    let route = routes[routeKey] || routes.home;
+
+    const publicKeys = ['login', 'register'];
+    const isPublic = publicKeys.includes(routeKey);
+    if (!isPublic && !auth.isAuthenticated()) {
+        route = routes.login;
+    }
 
     setCurrentRoute(route);
 
-    firstload
+  firstLoad
         ? history.replaceState(route, '', route.path)
         : history.pushState(route, '', route.path);
 
@@ -23,10 +30,20 @@ function navigate(path, firstload = false) {
 }
 
 function handlePopState({ state }) {
-    const route = state || routes.home;
+    let route = state || routes.home;
+
+    const publicPaths = [routes.login.path, routes.register.path];
+    if (!publicPaths.includes(route.path) && !auth.isAuthenticated()) {
+        route = routes.login;
+    }
 
     setCurrentRoute(route)
+
+    const container = document.getElementById('container');
+    if (container) container.innerHTML = '';
+
     launchController(route.controller)
+    updateActiveNav();
 }
 
 async function launchController(controllerName) {
@@ -39,22 +56,41 @@ async function launchController(controllerName) {
 }
 
 function setAnchorEventListener(){
-    const anchors = document.querySelectorAll('a');
-
-    anchors.forEach( elem =>{
-        elem.addEventListener('click', e => {
+    document.addEventListener('click', (e) => {
+        const a = e.target.closest('a');
+        if (!a) return;
+        const url = new URL(a.getAttribute('href'), window.location.origin);
+        // Only handle same-origin internal links
+        if (url.origin === window.location.origin) {
             e.preventDefault();
-            navigate(elem.pathname)
-        })
-    } )
+            navigate(url.pathname);
+        }
+    });
+}
+
+function updateActiveNav(){
+    const current = routes.currentPath.path;
+    document.querySelectorAll('nav a.nav-link').forEach(a => {
+        if (a.pathname === current) {
+            a.classList.add('active');
+            a.setAttribute('aria-current','page');
+        } else {
+            a.classList.remove('active');
+            a.removeAttribute('aria-current');
+        }
+    });
 }
 
 export function init() {
     const path = window.location.pathname
 
-    navigate(path, true);
+    const publicPaths = [routes.login.path, routes.register.path];
+    const initialPath = (!auth.isAuthenticated() && !publicPaths.includes(path)) ? routes.login.path : path;
+
+    navigate(initialPath, true);
     addEventListener('popstate', handlePopState)
     setAnchorEventListener();
+    updateActiveNav();
 }
 
 export default { init }

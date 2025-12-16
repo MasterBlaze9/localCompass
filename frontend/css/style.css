@@ -84,6 +84,20 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+/* App container aligned like admin */
+#container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+@media (min-width: 768px) {
+  #container { padding: 30px; }
+}
+@media (min-width: 1024px) {
+  #container { padding: 40px; }
+}
+
 /* ==========================================================================
    Helper classes
    ========================================================================== */

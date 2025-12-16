@@ -40,7 +40,7 @@ container.innerHTML = '';
 
     const avatar = document.createElement('div');
     avatar.className = 'post-avatar';
-    
+
 
     const metaText = document.createElement('div');
     metaText.className = 'post-meta-text';
@@ -96,7 +96,7 @@ container.innerHTML = '';
       label: 'Reply',
       className: 'lc-button lc-button--primary',
       onClick: () => {
-         
+
       }
     });
 
@@ -104,7 +104,7 @@ container.innerHTML = '';
 
     footer.append(leftFooter, rightFooter);
 
-    /* ---------- ASSEMBLE ---------- */
+   
     card.append(header, body, footer);
     list.appendChild(card);
   });

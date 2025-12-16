@@ -1,39 +1,32 @@
 export default {
-    home: {
-        path: '/',
-        controller: 'homeController'
-    },
-    events: {
-        path: '/events',
-        controller: 'eventController'
-    },
-<<<<<<< admin-page
-    admin: {
-        path: '/admin',
-        controller: 'adminController'
-    },
-    currentPath: {
-        path: '',
-        controller: ''
-    }
-=======
-     posts: {
-        path: '/posts',
-        controller: 'postController'
-    },
+  home: {
+    path: '/',
+    controller: 'homeController'
+  },
+  events: {
+    path: '/events',
+    controller: 'eventController'
+  },
+  posts: {
+    path: '/posts',
+    controller: 'postController'
+  },
+  admin: {
+    path: '/admin',
+    controller: 'adminController'
+  },
 
-    register: {
-        path: '/register',
-        controller: 'registerController'
-    },
+  register: {
+    path: '/register',
+    controller: 'registerController'
+  },
 
-    login: {
-        path: '/login',
-        controller: 'loginController'
+  login: {
+    path: '/login',
+    controller: 'loginController'
   },
   currentPath: {
     path: '',
     controller: ''
   }
->>>>>>> dev
 };

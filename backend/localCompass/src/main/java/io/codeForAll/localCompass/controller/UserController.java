@@ -7,7 +7,9 @@ import io.codeForAll.localCompass.entites.User;
 import io.codeForAll.localCompass.repositories.BuildingRepository;
 import io.codeForAll.localCompass.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,24 +19,34 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
     private UserRepository userRepository;
-
+    BuildingRepository buildingRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    BuildingRepository buildingRepository;
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-    // Get all users in a building
+    @Autowired
+    public void setBuildingRepository(BuildingRepository buildingRepository) {
+        this.buildingRepository = buildingRepository;
+    }
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsersByBuilding(@RequestParam Long buildingId) {
         List<User> users = userRepository.findByBuildingId(buildingId);
         List<UserDTO> response = users.stream()
                 .map(UserDTO::new)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // Get a single user by ID
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         User user = userRepository.findById(id)
@@ -42,7 +54,7 @@ public class UserController {
         return ResponseEntity.ok(new UserDTO(user));
     }
 
-    // Get a user by email
+
     @GetMapping("/by-email")
     public ResponseEntity<UserDTO> getUserByEmail(@RequestParam String email) {
         User user = userRepository.findByEmail(email)
@@ -50,7 +62,7 @@ public class UserController {
         return ResponseEntity.ok(new UserDTO(user));
     }
 
-    // Get a user by phone number
+
     @GetMapping("/by-phone")
     public ResponseEntity<UserDTO> getUserByPhone(@RequestParam String phoneNumber) {
         User user = userRepository.findByPhoneNumber(phoneNumber)
@@ -58,28 +70,35 @@ public class UserController {
         return ResponseEntity.ok(new UserDTO(user));
     }
 
+
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO dto) {
-        // Find the building first
-        Building building = buildingRepository.findByName(dto.getBuildingName())
-                .orElseThrow(() -> new RuntimeException("Building not found"));
-
-        // Create and populate the user entity
+        if ((dto.getEmail() == null || dto.getEmail().isBlank()) && (dto.getPhoneNumber() == null || dto.getPhoneNumber().isBlank())) {
+            throw new RuntimeException("Email or phone number is required");
+        }
         User user = new User();
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword()); // Note: hash password in production!
-        user.setUnitNumber(dto.getUnitNumber());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setPhoneNumber(dto.getPhoneNumber());
-        user.setAdmin(dto.isAdmin());
-        user.setBuilding(building);
-
-        // Save to DB
         User savedUser = userRepository.save(user);
-
-        // Return DTO response
         return ResponseEntity.ok(new UserDTO(savedUser));
+    }
+
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/assign-building")
+    public ResponseEntity<UserDTO> assignBuilding(@RequestBody io.codeForAll.localCompass.dto.user.AssignBuildingDTO dto) {
+        Building building = buildingRepository.findBuildingById(dto.getBuildingId())
+                .orElseThrow(() -> new RuntimeException("Building not found"));
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setBuilding(building);
+        if (dto.getUnitNumber() != null && !dto.getUnitNumber().isBlank()) {
+            user.setUnitNumber(dto.getUnitNumber());
+        }
+        User saved = userRepository.save(user);
+        return ResponseEntity.ok(new UserDTO(saved));
     }
 }
 

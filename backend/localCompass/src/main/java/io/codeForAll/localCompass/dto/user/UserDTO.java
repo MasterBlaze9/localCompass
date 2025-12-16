@@ -28,7 +28,7 @@ public class UserDTO {
         this.phoneNumber = user.getPhoneNumber();
         this.isAdmin = user.isAdmin();
         this.createdAt = user.getCreatedAt();
-        this.buildingId = user.getBuilding().getId();
+        this.buildingId = user.getBuilding() != null ? user.getBuilding().getId() : null;
     }
 
     // getters & setters

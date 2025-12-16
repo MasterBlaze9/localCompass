@@ -37,7 +37,7 @@ public class User {
 
 
     @ManyToOne
-    @JoinColumn(name = "building_id", nullable = false)
+    @JoinColumn(name = "building_id", nullable = true)
     private Building building;
 
 

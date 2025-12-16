@@ -19,15 +19,25 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
-    @Autowired
+
     private PostRepository postRepository;
-
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
     private BuildingRepository buildingRepository;
 
+    @Autowired
+    public void setPostRepository(PostRepository postRepository) {
+        this.postRepository = postRepository;
+    }
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setBuildingRepository(BuildingRepository buildingRepository) {
+        this.buildingRepository = buildingRepository;
+    }
 
     @PostMapping
     public ResponseEntity<PostResponseDTO> createPost(@RequestBody CreatePostDTO dto) {
@@ -54,7 +64,9 @@ public class PostController {
 
         List<Post> posts;
 
-         if (status != null) {
+        if (buildingId == null) {
+            posts = postRepository.findAll();
+        } else if (status != null) {
             posts = postRepository.findByBuildingIdAndStatus(buildingId, status);
         } else {
             posts = postRepository.findByBuildingId(buildingId);

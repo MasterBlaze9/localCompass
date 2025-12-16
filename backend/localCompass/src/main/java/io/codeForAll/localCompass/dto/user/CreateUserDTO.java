@@ -4,12 +4,10 @@ public class CreateUserDTO {
 
     private String firstName;
     private String lastName;
-    private String email;
+    private String email; // optional: can register with email, phone, or both
     private String password;
-    private String unitNumber;
-    private String phoneNumber;
-    private boolean isAdmin = false; // optional, defaults to false
-    private String buildingName; // required: which building the user belongs to
+    private String phoneNumber; // optional
+    // removed isAdmin and buildingName from registration
 
     public CreateUserDTO() {
     }
@@ -47,13 +45,7 @@ public class CreateUserDTO {
         this.password = password;
     }
 
-    public String getUnitNumber() {
-        return unitNumber;
-    }
 
-    public void setUnitNumber(String unitNumber) {
-        this.unitNumber = unitNumber;
-    }
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -63,19 +55,4 @@ public class CreateUserDTO {
         this.phoneNumber = phoneNumber;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
-
-    public String getBuildingName() {
-        return buildingName;
-    }
-
-    public void setBuildingName(String buildingName) {
-        this.buildingName = buildingName;
-    }
 }

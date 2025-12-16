@@ -1,5 +1,5 @@
 {
-  "name": " ",
+  "name": "local-compass-frontend",
   "version": "0.0.1",
   "description": "",
   "private": true,
@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "copy-webpack-plugin": "^11.0.0",
+    "dotenv-webpack": "^8.1.1",
     "css-loader": "^7.1.2",
     "html-webpack-plugin": "^5.6.0",
     "style-loader": "^4.0.0",

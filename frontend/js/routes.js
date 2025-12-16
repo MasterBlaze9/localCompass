@@ -7,6 +7,10 @@ export default {
         path: '/events',
         controller: 'eventController'
     },
+     posts: {
+        path: '/posts',
+        controller: 'postController'
+    },
     currentPath: {
         path: '',
         controller: ''

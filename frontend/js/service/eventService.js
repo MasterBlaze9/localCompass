@@ -1,5 +1,6 @@
 // Admin Service - handles API calls to backend
-const BASE_URL = 'https://53d27f99-4eb8-4287-ab9f-5476af247510.mock.pstmn.io';
+import auth from './authService.js'
+const BASE_URL = '/api';
 
 const eventService = {
 
@@ -13,7 +14,8 @@ const eventService = {
             const response = await fetch(`${BASE_URL}/events`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...auth.getAuthHeader()
                 }
             });
             
@@ -29,13 +31,38 @@ const eventService = {
         }
     },
     
+    async createEvent(payload) {
+        const response = await fetch(`${BASE_URL}/events`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() },
+            body: JSON.stringify(payload)
+        });
+        return this.handleResponse(response);
+    },
+
+    async joinEvent(eventId, userId) {
+        const response = await fetch(`${BASE_URL}/events/${eventId}/attendees?userId=${encodeURIComponent(userId)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+        });
+        return this.handleResponse(response);
+    },
+
+    async getAttendees(eventId) {
+        const response = await fetch(`${BASE_URL}/events/${eventId}/attendees`, {
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+        });
+        return this.handleResponse(response);
+    },
+
     // Delete an event by ID
     async deleteEvent(eventId) {
         try {
             const response = await fetch(`${BASE_URL}/events/${eventId}`, {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...auth.getAuthHeader()
                 }
             });
             

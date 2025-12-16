@@ -21,12 +21,12 @@ container.innerHTML = '';
   }
 
   items.forEach(post => {
-    const user_id = post.user_id ;
-    const timeAgo = post.timeAgo ;
-    const title = post.title ;
-    const bodyText = post.body ;
-    const location = post.location ;
-    const replys = post.replys ;
+    const author = post.authorName || 'Unknown';
+    const unit = post.authorUnit ? ` (Apt ${post.authorUnit})` : '';
+    const timeAgo = getTimeAgo(post.createdAt);
+    const title = post.title;
+    const bodyText = post.content;
+    const status = post.status || 'OPEN';
 
     const card = document.createElement('article');
     card.className = 'post-card';
@@ -47,7 +47,7 @@ container.innerHTML = '';
 
     const authorElement = document.createElement('div');
     authorElement.className = 'post-author';
-    authorElement.textContent = user_id;
+    authorElement.textContent = `${author}${unit}`;
 
     const timeElement = document.createElement('div');
     timeElement.className = 'post-time';
@@ -82,12 +82,10 @@ container.innerHTML = '';
     const leftFooter = document.createElement('div');
     leftFooter.className = 'post-footer-left';
 
-    if (location) {
-      const loc = document.createElement('span');
-      loc.className = 'post-location';
-      loc.textContent = `📍 ${location}`;
-      leftFooter.appendChild(loc);
-    }
+    const statusEl = document.createElement('span');
+    statusEl.className = 'post-status';
+    statusEl.textContent = status;
+    leftFooter.appendChild(statusEl);
 
     const rightFooter = document.createElement('div');
     rightFooter.className = 'post-footer-right';
@@ -104,12 +102,23 @@ container.innerHTML = '';
 
     footer.append(leftFooter, rightFooter);
 
-   
+
     card.append(header, body, footer);
     list.appendChild(card);
   });
 
   container.appendChild(list);
+}
+
+function getTimeAgo(timestamp){
+  if (!timestamp) return 'Recently';
+  const now = new Date();
+  const dt = new Date(timestamp);
+  const diff = Math.floor((now - dt)/1000);
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return `${Math.floor(diff/60)} min ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  return `${Math.floor(diff/86400)}d ago`;
 }
 
 export default { render };

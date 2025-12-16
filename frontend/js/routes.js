@@ -14,5 +14,14 @@ export default {
     currentPath: {
         path: '',
         controller: ''
+    },
+    register: {
+        path: '/register',
+        controller: 'registerController'
+    },
+
+    login: {
+        path: '/login',
+        controller: 'loginController'
     }
 };

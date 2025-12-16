@@ -1,0 +1,64 @@
+.register-wrapper {
+min-height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+background: #f5f7fb;
+}
+
+
+.register-card {
+width: 380px;
+background: #ffffff;
+padding: 32px;
+border-radius: 12px;
+box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+font-family: Inter, Arial, sans-serif;
+}
+
+
+.register-title {
+text-align: center;
+font-size: 18px;
+margin-bottom: 24px;
+}
+
+
+.register-label {
+font-size: 14px;
+margin-bottom: 6px;
+display: block;
+}
+
+
+.register-input {
+width: 100%;
+padding: 10px 12px;
+border-radius: 8px;
+border: 1px solid #dcdfe4;
+margin-bottom: 16px;
+}
+
+
+.register-btn {
+width: 100%;
+padding: 12px;
+background: #3861fb;
+color: #fff;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+}
+
+
+.register-footer {
+text-align: center;
+margin-top: 18px;
+font-size: 14px;
+}
+
+
+.register-footer a {
+color: #3861fb;
+cursor: pointer;
+}

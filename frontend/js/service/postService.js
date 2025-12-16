@@ -1,3 +1,4 @@
+<<<<<<< admin-page
 // Admin Service - handles API calls to backend
 const BASE_URL = 'https://53d27f99-4eb8-4287-ab9f-5476af247510.mock.pstmn.io';
 
@@ -48,3 +49,21 @@ const postService = {
 }
 
 export default postService;
+=======
+const BASE_URL = process.env.BASE_URL
+
+
+const postService = {
+
+   async getAllPosts() {
+       const response = await fetch(BASE_URL + "/posts");
+       const data = await response.json();
+       console.log(data)
+       return data;
+   }
+}
+
+
+export default postService;
+
+>>>>>>> dev

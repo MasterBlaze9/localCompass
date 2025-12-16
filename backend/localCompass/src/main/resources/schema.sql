@@ -1,0 +1,1 @@
+ALTER TABLE app_user ALTER COLUMN building_id DROP NOT NULL;

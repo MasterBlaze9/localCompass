@@ -144,9 +144,20 @@ function createNavButtons() {
     eventsBtn.textContent = '📅 Events';
     eventsBtn.className = 'lc-button lc-button--primary';
     eventsBtn.style.padding = '10px 20px';
+
+    // NEW: Add Users button
+    const usersBtn = document.createElement('button');
+    usersBtn.textContent = '👥 Users';
+    usersBtn.className = 'lc-button';
+    usersBtn.style.padding = '10px 20px';
+    usersBtn.onclick = async () => {
+        const controller = await import('../../controller/adminController.js');
+        controller.initUsers();
+    };
     
     nav.appendChild(postsBtn);
     nav.appendChild(eventsBtn);
+    nav.appendChild(usersBtn);
     
     return nav;
 }

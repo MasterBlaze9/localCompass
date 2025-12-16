@@ -154,3 +154,78 @@ function createNavigation() {
     
     return nav;
 }
+
+// ========================================
+// USERS MANAGEMENT
+// ========================================
+
+let users = [];
+
+// Initialize users management
+export async function initUsers() {
+    try {
+        console.log('Loading users management...');
+        
+        showLoading();
+        
+        // Fetch users from backend
+        users = await adminService.getAllUsers();
+        console.log('Users loaded:', users);
+        
+        // Import users view
+        const adminUsersView = await import('../view/admin/adminUsersView.js');
+        
+        // Render users view
+        adminUsersView.default.render(users, handleDeleteUser, handleAddUser);
+        
+    } catch (error) {
+        console.error('Error loading users:', error);
+        showError('Failed to load users');
+    }
+}
+
+// Handle add user action
+async function handleAddUser() {
+    const username = prompt('Enter username:');
+    if (!username || username.trim() === '') return;
+    
+    try {
+        const newUser = await adminService.addUser(username.trim());
+        
+        // Add to local array
+        users.push(newUser);
+        
+        // Re-render
+        const adminUsersView = await import('../view/admin/adminUsersView.js');
+        adminUsersView.default.render(users, handleDeleteUser, handleAddUser);
+        
+        alert('User added!');
+        
+    } catch (error) {
+        console.error('Error adding user:', error);
+        alert('Failed to add user');
+    }
+}
+
+// Handle delete user action
+async function handleDeleteUser(userId) {
+    const confirmed = confirm('Remove this user?');
+    if (!confirmed) return;
+    
+    try {
+        await adminService.deleteUser(userId);
+        
+        // Remove from local array
+        users = users.filter(user => user.user_id !== userId);
+        
+        // Re-render
+        const adminUsersView = await import('../view/admin/adminUsersView.js');
+        adminUsersView.default.render(users, handleDeleteUser, handleAddUser);
+        
+        alert('User removed!');
+        
+    } catch (error) {
+        console.error('Error removing user:', error);
+        alert('Failed to remove user');
+    }
+}

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="cb56824a-888f-463a-9085-9f7b05ed5519" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/controller/CondominiumController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/controller/EventController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/dto/building/BuildingDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/dto/building/CreateBuildingDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/dto/condominium/CondominiumDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/dto/condominium/CreateCondominiumDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/dto/events/CreateEventDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/dto/events/EventAttendeeDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/dto/events/EventResponseDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/dto/events/UpdateEventDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/dto/user/CreateUserDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/dto/user/UserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/controller/BuildingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/controller/BuildingController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/entites/enums/RsvpStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/entites/enums/RsvpStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/repositories/BuildingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/repositories/BuildingRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/repositories/PostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/localCompass/src/main/java/io/codeForAll/localCompass/repositories/PostRepository.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="36vYjC2iKSoK9UnQaYJT7J0eHKd" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.LocalCompassApplication.executor": "Run",
+    "git-widget-placeholder": "backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="LocalCompassApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="localCompass" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="io.codeForAll.localCompass.LocalCompassApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cb56824a-888f-463a-9085-9f7b05ed5519" name="Changes" comment="" />
+      <created>1765888645447</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1765888645447</updated>
+      <workItem from="1765888646865" duration="5925000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

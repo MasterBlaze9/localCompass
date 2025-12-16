@@ -12,6 +12,10 @@ export default {
         path: '/admin',
         controller: 'adminController'
     },
+    createPost: { 
+        path: '/posts/create',
+        controller: 'createPostController'
+    },
     currentPath: {
         path: '',
         controller: ''

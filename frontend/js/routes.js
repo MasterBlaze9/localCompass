@@ -11,10 +11,7 @@ export default {
         path: '/posts',
         controller: 'postController'
     },
-    currentPath: {
-        path: '',
-        controller: ''
-    },
+
     register: {
         path: '/register',
         controller: 'registerController'
@@ -23,5 +20,9 @@ export default {
     login: {
         path: '/login',
         controller: 'loginController'
-    }
+  },
+  currentPath: {
+    path: '',
+    controller: ''
+  }
 };

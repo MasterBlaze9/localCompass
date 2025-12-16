@@ -14,5 +14,10 @@ module.exports = merge(common, {
   },
   plugins: [
     new Dotenv(),
+<<<<<<< admin-page
   ],
 });
+=======
+  ]
+});
+>>>>>>> dev

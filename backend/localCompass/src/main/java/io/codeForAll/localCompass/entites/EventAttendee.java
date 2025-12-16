@@ -28,4 +28,44 @@ public class EventAttendee {
 
     @Column(name = "joined_at")
     private LocalDateTime joinedAt = LocalDateTime.now();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public RsvpStatus getRsvpStatus() {
+        return rsvpStatus;
+    }
+
+    public void setRsvpStatus(RsvpStatus rsvpStatus) {
+        this.rsvpStatus = rsvpStatus;
+    }
+
+    public LocalDateTime getJoinedAt() {
+        return joinedAt;
+    }
+
+    public void setJoinedAt(LocalDateTime joinedAt) {
+        this.joinedAt = joinedAt;
+    }
 }

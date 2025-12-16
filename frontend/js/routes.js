@@ -7,6 +7,16 @@ export default {
         path: '/events',
         controller: 'eventController'
     },
+<<<<<<< admin-page
+    admin: {
+        path: '/admin',
+        controller: 'adminController'
+    },
+    currentPath: {
+        path: '',
+        controller: ''
+    }
+=======
      posts: {
         path: '/posts',
         controller: 'postController'
@@ -25,4 +35,5 @@ export default {
     path: '',
     controller: ''
   }
+>>>>>>> dev
 };

@@ -1,5 +1,6 @@
 import '../../components/button/button.css';
 import './event.css';
+import openModal from '../../components/modal/modal.js';
 
 function render(items = [], currentUser = null, handlers = {}, currentScope = 'mine', attendingIdSet = null) {
   const container = document.getElementById('container');
@@ -142,6 +143,38 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
           viewBtn.disabled = false;
         });
         footer.appendChild(viewBtn);
+        
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Edit';
+        editBtn.className = 'lc-button';
+        editBtn.addEventListener('click', () => {
+          const form = document.createElement('div');
+          const tIn = document.createElement('input'); tIn.className = 'modal-input'; tIn.placeholder = 'Title'; tIn.value = ev.title || '';
+          const dIn = document.createElement('textarea'); dIn.className = 'modal-input'; dIn.rows = 3; dIn.placeholder = 'Description'; dIn.value = ev.description || '';
+          const lIn = document.createElement('input'); lIn.className = 'modal-input'; lIn.placeholder = 'Location'; lIn.value = ev.location || '';
+          const dtIn = document.createElement('input'); dtIn.type = 'datetime-local'; dtIn.className = 'modal-input';
+          try { if (ev.datetime) { const dt = new Date(ev.datetime); dtIn.value = new Date(dt.getTime()-dt.getTimezoneOffset()*60000).toISOString().slice(0,16); } } catch (_){ }
+          form.append(tIn, dIn, lIn, dtIn);
+          openModal({
+            title: 'Edit Event',
+            content: form,
+            actions: [
+              { label: 'Cancel', className: 'lc-button lc-button--secondary' },
+              { label: 'Save', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
+                  if (!tIn.value.trim()) { alert('Title required'); return; }
+                  await handlers?.onEdit?.(eventId, {
+                    title: tIn.value.trim(),
+                    description: dIn.value,
+                    location: lIn.value,
+                    datetime: dtIn.value ? dtIn.value : null
+                  });
+                  close();
+                } }
+            ]
+          });
+        });
+        footer.appendChild(editBtn);
+        
         // Auto-load attendees for the organizer for convenience
         loadAttendees().catch(() => { });
       }

@@ -1,5 +1,7 @@
 import createButton from '../../components/button/button.js';
 import "./post.css";
+import openModal from '../../components/modal/modal.js';
+import postService from '../../service/postService.js';
 
 function render(items = [], currentUser = null, handlers = {}, currentScope = 'mine') {
   const container = document.getElementById('container');
@@ -20,6 +22,44 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
   };
   tabs.append(mkTab('My posts', 'mine'), mkTab('Accepted', 'accepted'), mkTab('Available', 'available'));
   container.appendChild(tabs);
+
+  const createBtn = createButton({
+    label: 'New Post',
+    className: 'lc-button lc-button--primary',
+    onClick: () => {
+      if (!currentUser?.id) { alert('Login required'); return; }
+      const form = document.createElement('div');
+      const postTitleInput = document.createElement('input');
+      postTitleInput.placeholder = "What's this about?";
+      postTitleInput.className = 'modal-input';
+      const descInput = document.createElement('textarea');
+      descInput.placeholder = "Provide more details...";
+      descInput.rows = 3;
+      descInput.className = 'modal-input';
+      form.append(postTitleInput, descInput);
+
+      openModal({
+        title: 'Create a Post',
+        content: form,
+        actions: [
+          { label: 'Cancel', className: 'lc-button lc-button--secondary' },
+          { label: 'Post to Community', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
+              if (!postTitleInput.value.trim()) { alert('Please add a title before posting.'); return; }
+              const postData = { title: postTitleInput.value, content: descInput.value, userId: currentUser?.id, buildingId: currentUser?.buildingId };
+              try {
+                await postService.createPost(postData);
+                close();
+                handlers?.onFilter?.(currentScope);
+              } catch (err) {
+                alert('Failed to create post.');
+              }
+            }
+          }
+        ]
+      });
+    }
+  });
+  container.appendChild(createBtn);
 
   const list = document.createElement('div');
   list.className = 'posts-list';

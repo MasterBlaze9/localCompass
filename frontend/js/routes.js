@@ -15,12 +15,10 @@ export default {
     path: '/admin',
     controller: 'adminController'
   },
-
   register: {
     path: '/register',
     controller: 'registerController'
   },
-
   login: {
     path: '/login',
     controller: 'loginController'

@@ -10,7 +10,8 @@ export async function init() {
   let attendingIdSet = null;
   try {
     const [eventsRes, meRes, attendingRes] = await Promise.all([
-      eventService.getAllEvents(),
+      // Ensure initial view respects the default scope ("mine")
+      eventService.getAllEvents({ scope: currentScope }),
       fetch('/api/users/me', { headers: { 'Content-Type': 'application/json', ...(await import('../service/authService.js')).default.getAuthHeader() } }).then(r => r.ok ? r.json() : null),
       eventService.getAllEvents({ scope: 'attending' })
     ]);

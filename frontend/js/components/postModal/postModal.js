@@ -100,9 +100,9 @@ export default function createModal({ onPostCreated }) {
     descInput.rows = 3;
     descInput.className = 'modal-input';
 
-    const locationInput = document.createElement('input');
-    locationInput.placeholder = "e.g., Oak Street, Downtown, Community Center";
-    locationInput.className = 'modal-input';
+    const locInput = document.createElement('input');
+    locInput.placeholder = "e.g., Oak Street, Downtown, Community Center";
+    locInput.className = 'modal-input';
 
     const actions = document.createElement('div');
     actions.className = 'modal-actions';
@@ -123,14 +123,8 @@ export default function createModal({ onPostCreated }) {
             }
 
             const newPostData = {
-                user_id: nameInput.value,
-                avatar: selectedAvatar,
-                timeAgo: "Just now",
                 title: postTitleInput.value,
-                body: descInput.value,
-                location: locInput.value,
-                category: selectedCategory,
-                replys: []
+                content: descInput.value
             };
 
             onPostCreated(newPostData); 

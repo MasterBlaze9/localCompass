@@ -7,7 +7,7 @@ const eventService = {
     // ========================================
     // EVENTS MANAGEMENT
     // ========================================
-    
+
     // Fetch events (optional params: scope, buildingId, status)
     async getAllEvents(params = {}) {
         try {
@@ -27,7 +27,7 @@ const eventService = {
             throw error;
         }
     },
-    
+
     async createEvent(payload) {
         const response = await fetch(`${BASE_URL}/events`, {
             method: 'POST',
@@ -37,13 +37,26 @@ const eventService = {
         return this.handleResponse(response);
     },
 
-    async joinEvent(eventId, userId) {
-        const response = await fetch(`${BASE_URL}/events/${eventId}/attendees?userId=${encodeURIComponent(userId)}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+    async updateEvent(id, payload) {
+        const response = await fetch(`${BASE_URL}/events/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() },
+            body: JSON.stringify(payload)
         });
         return this.handleResponse(response);
     },
+
+  async joinEvent(eventId) {
+    
+    const response = await fetch(`${BASE_URL}/events/${eventId}/attendees`, {
+      method: 'POST', // Changed from PATCH to POST
+      headers: {
+        'Content-Type': 'application/json',
+        ...auth.getAuthHeader()
+      }
+    });
+    return this.handleResponse(response);
+  },
 
     async getAttendees(eventId) {
         const response = await fetch(`${BASE_URL}/events/${eventId}/attendees`, {
@@ -62,13 +75,13 @@ const eventService = {
                     ...auth.getAuthHeader()
                 }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             return await response.json();
-            
+
         } catch (error) {
             console.error('Error deleting event:', error);
             throw error;

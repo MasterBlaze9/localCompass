@@ -14,6 +14,7 @@ public class PostResponseDTO {
     private String authorName;
     private String authorUnit;
     private Long authorId;
+    private Boolean acceptedByMe; // whether the current user has accepted this post
 
     public PostResponseDTO() {}
 
@@ -71,5 +72,13 @@ public class PostResponseDTO {
 
     public void setAuthorUnit(String authorUnit) {
         this.authorUnit = authorUnit;
+    }
+
+    public Boolean getAcceptedByMe() {
+        return acceptedByMe;
+    }
+
+    public void setAcceptedByMe(Boolean acceptedByMe) {
+        this.acceptedByMe = acceptedByMe;
     }
 }

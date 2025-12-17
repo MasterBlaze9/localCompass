@@ -37,6 +37,15 @@ const eventService = {
         return this.handleResponse(response);
     },
 
+    async updateEvent(id, payload) {
+        const response = await fetch(`${BASE_URL}/events/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() },
+            body: JSON.stringify(payload)
+        });
+        return this.handleResponse(response);
+    },
+
   async joinEvent(eventId) {
     
     const response = await fetch(`${BASE_URL}/events/${eventId}/attendees`, {

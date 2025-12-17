@@ -9,6 +9,8 @@ import io.codeForAll.localCompass.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,15 +40,32 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    private User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(username)
+                .orElseGet(() -> userRepository.findByPhoneNumber(username)
+                        .orElseThrow(() -> new RuntimeException("User not found")));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsersByBuilding(@RequestParam(required = false) Long buildingId) {
-        List<User> users = (buildingId != null)
-                ? userRepository.findByBuildingId(buildingId)
-                : userRepository.findAll();
+        // Admin can only view users from their own building; ignore provided buildingId
+        User admin = getCurrentUser();
+        if (admin.getBuilding() == null) {
+            return ResponseEntity.ok(List.of());
+        }
+        Long adminBuildingId = admin.getBuilding().getId();
+        List<User> users = userRepository.findByBuildingId(adminBuildingId);
         List<UserDTO> response = users.stream()
                 .map(UserDTO::new)
                 .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getMe() {
+        return ResponseEntity.ok(new UserDTO(getCurrentUser()));
     }
 
     @GetMapping("/{id}")
@@ -56,7 +75,6 @@ public class UserController {
         return ResponseEntity.ok(new UserDTO(user));
     }
 
-
     @GetMapping("/by-email")
     public ResponseEntity<UserDTO> getUserByEmail(@RequestParam String email) {
         User user = userRepository.findByEmail(email)
@@ -64,14 +82,12 @@ public class UserController {
         return ResponseEntity.ok(new UserDTO(user));
     }
 
-
     @GetMapping("/by-phone")
     public ResponseEntity<UserDTO> getUserByPhone(@RequestParam String phoneNumber) {
         User user = userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return ResponseEntity.ok(new UserDTO(user));
     }
-
 
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO dto) {
@@ -88,7 +104,7 @@ public class UserController {
         return ResponseEntity.ok(new UserDTO(savedUser));
     }
 
-    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/assign-building")
     public ResponseEntity<UserDTO> assignBuilding(@RequestBody io.codeForAll.localCompass.dto.user.AssignBuildingDTO dto) {
         Building building = buildingRepository.findBuildingById(dto.getBuildingId())
@@ -102,5 +118,44 @@ public class UserController {
         User saved = userRepository.save(user);
         return ResponseEntity.ok(new UserDTO(saved));
     }
-}
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<UserDTO> deleteUser(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        // Soft-remove from building: null building and unit
+        user.setBuilding(null);
+        user.setUnitNumber(null);
+        User saved = userRepository.save(user);
+        return ResponseEntity.ok(new UserDTO(saved));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/add-to-my-building")
+    public ResponseEntity<UserDTO> addToMyBuilding(@RequestBody io.codeForAll.localCompass.dto.user.AddToMyBuildingDTO dto) {
+        User admin = getCurrentUser();
+        if (admin.getBuilding() == null) {
+            throw new RuntimeException("Admin has no building assigned");
+        }
+        if ((dto.getEmail() == null || dto.getEmail().isBlank()) && (dto.getPhoneNumber() == null || dto.getPhoneNumber().isBlank())) {
+            throw new RuntimeException("Email or phone is required");
+        }
+        User target = null;
+        if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
+            target = userRepository.findByEmail(dto.getEmail()).orElse(null);
+        }
+        if (target == null && dto.getPhoneNumber() != null && !dto.getPhoneNumber().isBlank()) {
+            target = userRepository.findByPhoneNumber(dto.getPhoneNumber()).orElse(null);
+        }
+        if (target == null) {
+            throw new RuntimeException("User not found");
+        }
+        target.setBuilding(admin.getBuilding());
+        if (dto.getUnitNumber() != null && !dto.getUnitNumber().isBlank()) {
+            target.setUnitNumber(dto.getUnitNumber());
+        }
+        User saved = userRepository.save(target);
+        return ResponseEntity.ok(new UserDTO(saved));
+    }
+}

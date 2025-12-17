@@ -3,27 +3,21 @@ const BASE_URL = '/api';
 
 const postService = {
 
-    // Fetch all posts from backend
-    async getAllPosts() {
-        try {
-            const response = await fetch(`${BASE_URL}/posts`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...auth.getAuthHeader()
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            return await response.json();
-
-        } catch (error) {
-            console.error('Error fetching posts:', error);
-            throw error;
-        }
+  // Fetch all posts from backend (optional filters)
+  async getAllPosts(params = {}) {
+    try {
+      const q = new URLSearchParams(params).toString();
+      const url = q ? `${BASE_URL}/posts?${q}` : `${BASE_URL}/posts`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      throw error;
+    }
   },
 
   // Create a new post
@@ -31,15 +25,10 @@ const postService = {
     try {
       const response = await fetch(`${BASE_URL}/posts`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...auth.getAuthHeader()
-        },
+        headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() },
         body: JSON.stringify(data)
       });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       return await response.json();
     } catch (error) {
       console.error('Error creating post:', error);
@@ -47,28 +36,50 @@ const postService = {
     }
   },
 
-    // Delete a post by ID
-    async deletePost(postId) {
-        try {
-            const response = await fetch(`${BASE_URL}/posts/${postId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...auth.getAuthHeader()
-                }
-            });
+  // Update post
+  async updatePost(id, data) {
+    const response = await fetch(`${BASE_URL}/posts/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return response.json();
+  },
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+  // Accept a post
+  async acceptPost(postId, userId) {
+    const response = await fetch(`${BASE_URL}/posts/${postId}/acceptances?userId=${encodeURIComponent(userId)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return response.json();
+  },
 
-            return await response.json();
+  // List post acceptances (creator/admin only)
+  async listAcceptances(postId) {
+    const response = await fetch(`${BASE_URL}/posts/${postId}/acceptances`, {
+      headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return response.json();
+  },
 
-        } catch (error) {
-            console.error('Error deleting post:', error);
-            throw error;
-        }
-    },
+  // Delete a post by ID
+  async deletePost(postId) {
+    try {
+      const response = await fetch(`${BASE_URL}/posts/${postId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      throw error;
+    }
+  },
 }
 
 export default postService;

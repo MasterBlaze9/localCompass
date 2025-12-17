@@ -1,3 +1,6 @@
+import '../../components/button/button.css';
+import './event.css';
+
 function render(items = [], currentUser = null, handlers = {}, currentScope = 'mine', attendingIdSet = null) {
   const container = document.getElementById('container');
   if (!container) return;

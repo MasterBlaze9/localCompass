@@ -33,6 +33,21 @@ function render() {
     fontWeight: '600'
   });
 
+  // Global error container
+  const globalError = document.createElement('div');
+  globalError.id = 'register-error-global';
+  globalError.setAttribute('aria-live', 'polite');
+  Object.assign(globalError.style, {
+    display: 'none',
+    background: '#fde8e8',
+    color: '#b91c1c',
+    border: '1px solid #fecaca',
+    padding: '10px 12px',
+    borderRadius: '8px',
+    marginBottom: '16px',
+    fontSize: '14px'
+  });
+
   // Create name fields wrapper
   const nameRow = document.createElement('div');
   Object.assign(nameRow.style, {
@@ -61,12 +76,17 @@ function render() {
     padding: '10px 12px',
     borderRadius: '8px',
     border: '1px solid #dcdfe4',
-    marginBottom: '16px',
+    marginBottom: '6px',
     boxSizing: 'border-box',
     fontSize: '14px'
   });
   firstNameGroup.appendChild(firstNameLabel);
   firstNameGroup.appendChild(firstNameInput);
+  const firstNameErr = document.createElement('div');
+  firstNameErr.id = 'register-error-firstName';
+  firstNameErr.setAttribute('aria-live', 'polite');
+  Object.assign(firstNameErr.style, { display: 'none', color: '#b91c1c', fontSize: '12px', marginBottom: '10px' });
+  firstNameGroup.appendChild(firstNameErr);
 
   // Last name field
   const lastNameGroup = document.createElement('div');
@@ -87,12 +107,17 @@ function render() {
     padding: '10px 12px',
     borderRadius: '8px',
     border: '1px solid #dcdfe4',
-    marginBottom: '16px',
+    marginBottom: '6px',
     boxSizing: 'border-box',
     fontSize: '14px'
   });
   lastNameGroup.appendChild(lastNameLabel);
   lastNameGroup.appendChild(lastNameInput);
+  const lastNameErr = document.createElement('div');
+  lastNameErr.id = 'register-error-lastName';
+  lastNameErr.setAttribute('aria-live', 'polite');
+  Object.assign(lastNameErr.style, { display: 'none', color: '#b91c1c', fontSize: '12px', marginBottom: '10px' });
+  lastNameGroup.appendChild(lastNameErr);
   nameRow.appendChild(firstNameGroup);
   nameRow.appendChild(lastNameGroup);
 
@@ -113,10 +138,14 @@ function render() {
     padding: '10px 12px',
     borderRadius: '8px',
     border: '1px solid #dcdfe4',
-    marginBottom: '16px',
+    marginBottom: '6px',
     boxSizing: 'border-box',
     fontSize: '14px'
   });
+  const emailErr = document.createElement('div');
+  emailErr.id = 'register-error-email';
+  emailErr.setAttribute('aria-live', 'polite');
+  Object.assign(emailErr.style, { display: 'none', color: '#b91c1c', fontSize: '12px', marginBottom: '10px' });
 
   // Create phone field
   const phoneLabel = document.createElement('label');
@@ -135,10 +164,14 @@ function render() {
     padding: '10px 12px',
     borderRadius: '8px',
     border: '1px solid #dcdfe4',
-    marginBottom: '16px',
+    marginBottom: '6px',
     boxSizing: 'border-box',
     fontSize: '14px'
   });
+  const phoneErr = document.createElement('div');
+  phoneErr.id = 'register-error-phone';
+  phoneErr.setAttribute('aria-live', 'polite');
+  Object.assign(phoneErr.style, { display: 'none', color: '#b91c1c', fontSize: '12px', marginBottom: '10px' });
 
   // Create password field
   const passwordLabel = document.createElement('label');
@@ -157,10 +190,14 @@ function render() {
     padding: '10px 12px',
     borderRadius: '8px',
     border: '1px solid #dcdfe4',
-    marginBottom: '16px',
+    marginBottom: '6px',
     boxSizing: 'border-box',
     fontSize: '14px'
   });
+  const passwordErr = document.createElement('div');
+  passwordErr.id = 'register-error-password';
+  passwordErr.setAttribute('aria-live', 'polite');
+  Object.assign(passwordErr.style, { display: 'none', color: '#b91c1c', fontSize: '12px', marginBottom: '10px' });
 
   // Create submit button
   const submitBtn = document.createElement('button');
@@ -219,13 +256,17 @@ function render() {
   footer.appendChild(loginLink);
 
   card.appendChild(title);
+  card.appendChild(globalError);
   card.appendChild(nameRow);
   card.appendChild(emailLabel);
   card.appendChild(emailInput);
+  card.appendChild(emailErr);
   card.appendChild(phoneLabel);
   card.appendChild(phoneInput);
+  card.appendChild(phoneErr);
   card.appendChild(passwordLabel);
   card.appendChild(passwordInput);
+  card.appendChild(passwordErr);
   card.appendChild(submitBtn);
   card.appendChild(footer);
 

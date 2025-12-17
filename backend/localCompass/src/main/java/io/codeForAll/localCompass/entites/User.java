@@ -26,7 +26,7 @@ public class User {
     @Column(name = "unit_number")
     private String unitNumber;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
     @Column(name = "is_admin")

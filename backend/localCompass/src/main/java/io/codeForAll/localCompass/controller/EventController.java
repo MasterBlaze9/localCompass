@@ -17,10 +17,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/events")
 public class EventController {
 
-    @Autowired private EventRepository eventRepository;
-    @Autowired private UserRepository userRepository;
-    @Autowired private BuildingRepository buildingRepository;
-    @Autowired private EventAttendeeRepository eventAttendeeRepository;
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private BuildingRepository buildingRepository;
+    @Autowired
+    private EventAttendeeRepository eventAttendeeRepository;
 
     private User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -89,33 +93,31 @@ public class EventController {
 
     // Join Event (self or admin)
     @PostMapping("/{eventId}/attendees")
-    public ResponseEntity<EventAttendeeDTO> joinEvent(@PathVariable Long eventId, @RequestParam Long userId) {
+    public ResponseEntity<EventAttendeeDTO> joinEvent(@PathVariable Long eventId) {
         User authUser = getCurrentUser();
-        if (!authUser.isAdmin() && !authUser.getId().equals(userId)) {
-            throw new RuntimeException("Forbidden");
-        }
+
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        eventAttendeeRepository.findByEventIdAndUserId(eventId, userId)
-                .ifPresent(a -> { throw new RuntimeException("User already attending"); });
+        // Check if already attending to prevent duplicates
+        eventAttendeeRepository.findByEventIdAndUserId(eventId, authUser.getId())
+                .ifPresent(a -> {
+                    throw new RuntimeException("User already attending");
+                });
 
         EventAttendee attendee = new EventAttendee();
         attendee.setEvent(event);
-        attendee.setUser(user);
-        attendee.setRsvpStatus(RsvpStatus.PENDING);
+        attendee.setUser(authUser);
+
+        attendee.setRsvpStatus(RsvpStatus.PRESENT);
 
         EventAttendee saved = eventAttendeeRepository.save(attendee);
         return ResponseEntity.ok(new EventAttendeeDTO(saved));
     }
 
-    // Update Attendance Status (creator or admin)
     @PatchMapping("/{eventId}/attendees/{userId}")
     public ResponseEntity<EventAttendeeDTO> updateAttendance(@PathVariable Long eventId,
-                                                             @PathVariable Long userId,
-                                                             @RequestParam RsvpStatus status) {
+                                                             @PathVariable Long userId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
         User authUser = getCurrentUser();
@@ -125,7 +127,7 @@ public class EventController {
         EventAttendee attendee = eventAttendeeRepository.findByEventIdAndUserId(eventId, userId)
                 .orElseThrow(() -> new RuntimeException("Attendee not found"));
 
-        attendee.setRsvpStatus(status);
+        attendee.setRsvpStatus(RsvpStatus.PRESENT);
         EventAttendee updated = eventAttendeeRepository.save(attendee);
         return ResponseEntity.ok(new EventAttendeeDTO(updated));
     }

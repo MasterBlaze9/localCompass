@@ -6,6 +6,7 @@ export async function init() {
   // Load events and current user
   let items = [];
   let me = null;
+  let currentScope = 'mine';
   try {
     const [eventsRes, meRes] = await Promise.all([
       eventService.getAllEvents(),
@@ -18,6 +19,11 @@ export async function init() {
   }
 
   const handlers = {
+    onFilter: async (scope) => {
+      currentScope = scope;
+      const newItems = await eventService.getAllEvents({ scope });
+      eventView.render(newItems, me, handlers, currentScope);
+    },
     onCreate: () => {
       if (!me?.id) { alert('Login required'); return; }
       const form = document.createElement('div');
@@ -60,5 +66,5 @@ export async function init() {
     }
   };
 
-  eventView.render(items, me, handlers);
+  eventView.render(items, me, handlers, currentScope);
 }

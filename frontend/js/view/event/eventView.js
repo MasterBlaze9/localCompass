@@ -1,3 +1,5 @@
+import "./event.css";
+
 function render(items = [], currentUser = null, handlers = {}, currentScope = 'mine') {
 	const container = document.getElementById('container')
 	if (!container) return;

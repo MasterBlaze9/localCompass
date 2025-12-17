@@ -30,6 +30,21 @@ function render() {
     fontWeight: '600'
   });
 
+  // Global error container
+  const globalError = document.createElement('div');
+  globalError.id = 'login-error-global';
+  globalError.setAttribute('aria-live', 'polite');
+  Object.assign(globalError.style, {
+    display: 'none',
+    background: '#fde8e8',
+    color: '#b91c1c',
+    border: '1px solid #fecaca',
+    padding: '10px 12px',
+    borderRadius: '8px',
+    marginBottom: '16px',
+    fontSize: '14px'
+  });
+
   const idLabel = document.createElement('label');
   idLabel.textContent = 'Email or phone';
   Object.assign(idLabel.style, {
@@ -52,6 +67,16 @@ function render() {
     fontSize: '14px'
   });
 
+  const idError = document.createElement('div');
+  idError.id = 'login-error-identifier';
+  idError.setAttribute('aria-live', 'polite');
+  Object.assign(idError.style, {
+    display: 'none',
+    color: '#b91c1c',
+    fontSize: '12px',
+    marginBottom: '10px'
+  });
+
   const pwdLabel = document.createElement('label');
   pwdLabel.textContent = 'Password';
   Object.assign(pwdLabel.style, {
@@ -69,9 +94,19 @@ function render() {
     padding: '10px 12px',
     borderRadius: '8px',
     border: '1px solid #dcdfe4',
-    marginBottom: '16px',
+    marginBottom: '6px',
     boxSizing: 'border-box',
     fontSize: '14px'
+  });
+
+  const pwdError = document.createElement('div');
+  pwdError.id = 'login-error-password';
+  pwdError.setAttribute('aria-live', 'polite');
+  Object.assign(pwdError.style, {
+    display: 'none',
+    color: '#b91c1c',
+    fontSize: '12px',
+    marginBottom: '10px'
   });
 
   const row = document.createElement('div');
@@ -141,10 +176,13 @@ function render() {
   footer.appendChild(registerLink);
 
   card.appendChild(title);
+  card.appendChild(globalError);
   card.appendChild(idLabel);
   card.appendChild(idInput);
+  card.appendChild(idError);
   card.appendChild(pwdLabel);
   card.appendChild(pwdInput);
+  card.appendChild(pwdError);
   card.appendChild(row);
   card.appendChild(loginBtn);
   card.appendChild(footer);

@@ -24,7 +24,7 @@ public class EventAttendee {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "rsvp_status")
-    private RsvpStatus rsvpStatus; // CONFIRMADO, TALVEZ...
+    private RsvpStatus rsvpStatus;
 
     @Column(name = "joined_at")
     private LocalDateTime joinedAt = LocalDateTime.now();

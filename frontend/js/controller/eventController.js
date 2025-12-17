@@ -7,13 +7,17 @@ export async function init() {
   let items = [];
   let me = null;
   let currentScope = 'mine';
+  let attendingIdSet = null;
   try {
-    const [eventsRes, meRes] = await Promise.all([
-      eventService.getAllEvents(),
-      fetch('/api/users/me', { headers: { 'Content-Type': 'application/json', ...(await import('../service/authService.js')).default.getAuthHeader() } }).then(r => r.ok ? r.json() : null)
+    const [eventsRes, meRes, attendingRes] = await Promise.all([
+      // Ensure initial view respects the default scope ("mine")
+      eventService.getAllEvents({ scope: currentScope }),
+      fetch('/api/users/me', { headers: { 'Content-Type': 'application/json', ...(await import('../service/authService.js')).default.getAuthHeader() } }).then(r => r.ok ? r.json() : null),
+      eventService.getAllEvents({ scope: 'attending' })
     ]);
     items = eventsRes || [];
     me = meRes || null;
+    attendingIdSet = new Set((attendingRes || []).map(ev => (ev.id ?? ev.event_id ?? ev.eventId)));
   } catch (e) {
     items = [];
   }
@@ -21,8 +25,12 @@ export async function init() {
   const handlers = {
     onFilter: async (scope) => {
       currentScope = scope;
-      const newItems = await eventService.getAllEvents({ scope });
-      eventView.render(newItems, me, handlers, currentScope);
+      const [newItems, attendingRes] = await Promise.all([
+        eventService.getAllEvents({ scope }),
+        eventService.getAllEvents({ scope: 'attending' })
+      ]);
+      attendingIdSet = new Set((attendingRes || []).map(ev => (ev.id ?? ev.event_id ?? ev.eventId)));
+      eventView.render(newItems, me, handlers, currentScope, attendingIdSet);
     },
     onCreate: () => {
       if (!me?.id) { alert('Login required'); return; }
@@ -38,7 +46,8 @@ export async function init() {
         content: form,
         actions: [
           { label: 'Cancel', className: 'lc-button', onClick: (_e, { close }) => close() },
-          { label: 'Create', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
+          {
+            label: 'Create', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
               if (!t.value.trim()) { alert('Title required'); return; }
               if (!me?.buildingId) { alert('You are not assigned to a building'); return; }
               await eventService.createEvent({
@@ -51,7 +60,8 @@ export async function init() {
               });
               close();
               init();
-            } }
+            }
+          }
         ]
       });
     },
@@ -66,5 +76,5 @@ export async function init() {
     }
   };
 
-  eventView.render(items, me, handlers, currentScope);
+  eventView.render(items, me, handlers, currentScope, attendingIdSet);
 }

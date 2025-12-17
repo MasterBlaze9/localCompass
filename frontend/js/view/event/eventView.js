@@ -79,10 +79,26 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
 
       // Normalize commonly used IDs to handle different payload shapes
       const eventId = ev.id ?? ev.event_id ?? ev.eventId;
-      const creatorId = ev.creatorId ?? ev.creator_id ?? ev.userId ?? ev.ownerId;
+      // Try a wide set of possible creator/owner fields and nested objects
+      const creatorObj = (typeof ev.creator === 'object' && ev.creator)
+        || (typeof ev.owner === 'object' && ev.owner)
+        || (typeof ev.user === 'object' && ev.user)
+        || (typeof ev.organizer === 'object' && ev.organizer)
+        || null;
+      const creatorId =
+        ev.creatorId ?? ev.creator_id ??
+        ev.createdById ?? ev.created_by_id ??
+        ev.createdBy ?? ev.created_by ??
+        ev.organizerId ?? ev.organizer_id ??
+        ev.ownerId ?? ev.owner_id ??
+        ev.userId ?? ev.user_id ??
+        (creatorObj ? (creatorObj.id ?? creatorObj.userId ?? creatorObj.user_id) : null);
 
       // Ownership: creator only if event.creatorId matches current user
-      const isCreator = Boolean(currentUser && creatorId && (creatorId == currentUser.id));
+      // Fallback: in "My events" scope treat entries as created by me (server usually filters by creator)
+      const isCreator = (
+        Boolean(currentUser && creatorId && (creatorId == currentUser.id))
+      ) || (currentScope === 'mine');
 
       // Attendance: trust explicit set, scope 'attending', OR flags/arrays
       const isAttendingFromSet = attendingIdSet && (attendingIdSet.has((ev.id ?? ev.event_id ?? ev.eventId)));
@@ -103,8 +119,7 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
         const viewBtn = document.createElement('button');
         viewBtn.textContent = 'View attendees';
         viewBtn.className = 'lc-button';
-        viewBtn.addEventListener('click', async () => {
-          viewBtn.disabled = true;
+        const loadAttendees = async () => {
           await handlers?.onViewAttendees?.(eventId, (arr) => {
             mount.innerHTML = '';
             if (!arr || !arr.length) {
@@ -120,9 +135,15 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
             });
             mount.appendChild(ul);
           });
+        };
+        viewBtn.addEventListener('click', async () => {
+          viewBtn.disabled = true;
+          await loadAttendees();
           viewBtn.disabled = false;
         });
         footer.appendChild(viewBtn);
+        // Auto-load attendees for the organizer for convenience
+        loadAttendees().catch(() => { });
       }
 
       // ============================================================

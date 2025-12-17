@@ -1,5 +1,7 @@
 import createButton from '../../components/button/button.js';
 import "./post.css";
+import openModal from '../../components/modal/modal.js';
+import postService from '../../service/postService.js';
 
 function render(items = [], currentUser = null, handlers = {}, currentScope = 'mine') {
   const container = document.getElementById('container');
@@ -20,6 +22,45 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
   };
   tabs.append(mkTab('My posts', 'mine'), mkTab('Accepted', 'accepted'), mkTab('Available', 'available'));
   container.appendChild(tabs);
+
+  const createBtn = createButton({
+    label: 'New Post',
+    className: 'lc-button lc-button--primary',
+    onClick: () => {
+      if (!currentUser?.id) { alert('Login required'); return; }
+      const form = document.createElement('div');
+      const postTitleInput = document.createElement('input');
+      postTitleInput.placeholder = "What's this about?";
+      postTitleInput.className = 'modal-input';
+      const descInput = document.createElement('textarea');
+      descInput.placeholder = "Provide more details...";
+      descInput.rows = 3;
+      descInput.className = 'modal-input';
+      form.append(postTitleInput, descInput);
+
+      openModal({
+        title: 'Create a Post',
+        content: form,
+        actions: [
+          { label: 'Cancel', className: 'lc-button lc-button--secondary' },
+          {
+            label: 'Post to Community', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
+              if (!postTitleInput.value.trim()) { alert('Please add a title before posting.'); return; }
+              const postData = { title: postTitleInput.value, content: descInput.value, userId: currentUser?.id, buildingId: currentUser?.buildingId };
+              try {
+                await postService.createPost(postData);
+                close();
+                handlers?.onFilter?.(currentScope);
+              } catch (err) {
+                alert('Failed to create post.');
+              }
+            }
+          }
+        ]
+      });
+    }
+  });
+  container.appendChild(createBtn);
 
   const list = document.createElement('div');
   list.className = 'posts-list';
@@ -127,11 +168,48 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
         }
       });
       rightFooter.appendChild(viewBtn);
+
+      const editBtn = createButton({
+        label: 'Edit',
+        className: 'lc-button',
+        onClick: () => {
+          const form = document.createElement('div');
+          const titleInput = document.createElement('input');
+          titleInput.className = 'modal-input';
+          titleInput.placeholder = 'Title';
+          titleInput.value = title || '';
+          const descInput = document.createElement('textarea');
+          descInput.className = 'modal-input';
+          descInput.rows = 3;
+          descInput.placeholder = 'Details';
+          descInput.value = bodyText || '';
+          form.append(titleInput, descInput);
+          openModal({
+            title: 'Edit Post',
+            content: form,
+            actions: [
+              { label: 'Cancel', className: 'lc-button lc-button--secondary' },
+              { label: 'Save', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
+                  if (!titleInput.value.trim()) { alert('Title required'); return; }
+                  await handlers?.onEdit?.(post.id, { title: titleInput.value.trim(), content: descInput.value });
+                  close();
+                }
+              }
+            ]
+          });
+        }
+      });
+      rightFooter.appendChild(editBtn);
     } else {
+      // Check if current user has already accepted this post
+      const currentUserName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : '';
+      const hasAccepted = (post.acceptedByMe === true) || (post.acceptances && post.acceptances.some(a => a.userName === currentUserName));
+
       const acceptBtn = createButton({
-        label: 'Accept',
-        className: 'lc-button lc-button--primary',
-        onClick: async () => { await handlers?.onAccept?.(post.id); }
+        label: hasAccepted ? 'Already Accepted' : 'Accept',
+        className: `lc-button${hasAccepted ? '' : ' lc-button--primary'}`,
+        onClick: async () => { if (!hasAccepted) { await handlers?.onAccept?.(post.id); } },
+        disabled: hasAccepted
       });
       rightFooter.appendChild(acceptBtn);
     }
@@ -145,15 +223,15 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
   container.appendChild(list);
 }
 
-function getTimeAgo(timestamp){
+function getTimeAgo(timestamp) {
   if (!timestamp) return 'Recently';
   const now = new Date();
   const dt = new Date(timestamp);
-  const diff = Math.floor((now - dt)/1000);
+  const diff = Math.floor((now - dt) / 1000);
   if (diff < 60) return 'Just now';
-  if (diff < 3600) return `${Math.floor(diff/60)} min ago`;
-  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
-  return `${Math.floor(diff/86400)}d ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
 }
 
 export default { render };

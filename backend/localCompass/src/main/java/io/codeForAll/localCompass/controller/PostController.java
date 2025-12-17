@@ -192,6 +192,13 @@ public class PostController {
         dto.setCreatedAt(post.getCreatedAt());
         dto.setAuthorName(post.getUser().getFirstName() + " " + post.getUser().getLastName());
         dto.setAuthorUnit(post.getUser().getUnitNumber());
+        try {
+            User me = getCurrentUser();
+            if (me != null) {
+                boolean accepted = postAcceptanceRepository.findByPostIdAndUserId(post.getId(), me.getId()).isPresent();
+                dto.setAcceptedByMe(accepted);
+            }
+        } catch (Exception ignored) { /* no-op */ }
         return dto;
     }
 }

@@ -33,6 +33,69 @@ function render() {
     fontWeight: '600'
   });
 
+  // Create name fields wrapper
+  const nameRow = document.createElement('div');
+  Object.assign(nameRow.style, {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '12px',
+    marginBottom: '0px'
+  });
+
+  // First name field
+  const firstNameGroup = document.createElement('div');
+  const firstNameLabel = document.createElement('label');
+  firstNameLabel.textContent = 'First name';
+  Object.assign(firstNameLabel.style, {
+    fontSize: '14px',
+    marginBottom: '6px',
+    display: 'block'
+  });
+  const firstNameInput = document.createElement('input');
+  firstNameInput.type = 'text';
+  firstNameInput.placeholder = 'Jane';
+  firstNameInput.setAttribute('aria-label', 'First name');
+  firstNameInput.required = true;
+  Object.assign(firstNameInput.style, {
+    width: '100%',
+    padding: '10px 12px',
+    borderRadius: '8px',
+    border: '1px solid #dcdfe4',
+    marginBottom: '16px',
+    boxSizing: 'border-box',
+    fontSize: '14px'
+  });
+  firstNameGroup.appendChild(firstNameLabel);
+  firstNameGroup.appendChild(firstNameInput);
+
+  // Last name field
+  const lastNameGroup = document.createElement('div');
+  const lastNameLabel = document.createElement('label');
+  lastNameLabel.textContent = 'Last name';
+  Object.assign(lastNameLabel.style, {
+    fontSize: '14px',
+    marginBottom: '6px',
+    display: 'block'
+  });
+  const lastNameInput = document.createElement('input');
+  lastNameInput.type = 'text';
+  lastNameInput.placeholder = 'Doe';
+  lastNameInput.setAttribute('aria-label', 'Last name');
+  lastNameInput.required = true;
+  Object.assign(lastNameInput.style, {
+    width: '100%',
+    padding: '10px 12px',
+    borderRadius: '8px',
+    border: '1px solid #dcdfe4',
+    marginBottom: '16px',
+    boxSizing: 'border-box',
+    fontSize: '14px'
+  });
+  lastNameGroup.appendChild(lastNameLabel);
+  lastNameGroup.appendChild(lastNameInput);
+  nameRow.appendChild(firstNameGroup);
+  nameRow.appendChild(lastNameGroup);
+
   // Create email field
   const emailLabel = document.createElement('label');
   emailLabel.textContent = 'Email';
@@ -156,6 +219,7 @@ function render() {
   footer.appendChild(loginLink);
 
   card.appendChild(title);
+  card.appendChild(nameRow);
   card.appendChild(emailLabel);
   card.appendChild(emailInput);
   card.appendChild(phoneLabel);

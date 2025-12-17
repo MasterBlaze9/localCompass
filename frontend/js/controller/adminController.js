@@ -191,24 +191,32 @@ export async function initUsers() {
 async function handleAddUser() {
     // Open modal
     createAddUserModal(
-        // onConfirm callback - receives { email, phone }
-        async (data) => {
+        // onConfirm callback - receives (data, ctx)
+        async (data, ctx) => {
             try {
-                // Call backend with email or phone
                 const newUser = await userService.addUser(data);
-                
-                // Add to local array
                 users.push(newUser);
-                
-                // Re-render
                 const adminUsersView = await import('../view/admin/adminUsersView.js');
                 adminUsersView.default.render(users, handleDeleteUser, handleAddUser);
-                
-                alert('User added successfully!');
-                
+                ctx.close();
             } catch (error) {
                 console.error('Error adding user:', error);
-                alert('Failed to add user');
+                const msg = error?.message || 'Failed to add user';
+                const field = error?.field;
+                const lower = msg.toLowerCase();
+                // Prefer backend field mapping
+                if (field === 'email') return ctx.setEmailError(msg);
+                if (field === 'phone' || field === 'phoneNumber') return ctx.setPhoneError(msg);
+                // Fallback heuristics
+                if (lower.includes('email') && (lower.includes('duplicate') || lower.includes('exists') || lower.includes('registered'))) {
+                    return ctx.setEmailError('This email is already registered');
+                }
+                if (lower.includes('phone') && (lower.includes('duplicate') || lower.includes('exists') || lower.includes('registered'))) {
+                    return ctx.setPhoneError('This phone number is already registered');
+                }
+                ctx.setGlobalError(msg);
+            } finally {
+                ctx.setSubmitting(false);
             }
         },
         // onCancel callback (optional)

@@ -1,4 +1,5 @@
 import registerView from '../view/register/registerView.js';
+import userService from '../service/userService.js';
 
 function isEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -20,26 +21,33 @@ export function init() {
     const phone = container.querySelector('input[type="tel"]')?.value;
     const password = container.querySelector('input[type="password"]').value;
 
-    if (!email || !phone || !password) {
-      alert('All fields are required');
+    if ((!email && !phone) || !password) {
+      alert('Email or phone and password are required');
       return;
     }
 
-    if (!isEmail(email)) {
+    if (email && !isEmail(email)) {
       alert('Invalid email format');
       return;
     }
 
-    if (!isPhone(phone)) {
+    if (phone && !isPhone(phone)) {
       alert('Invalid phone number');
       return;
     }
 
-    console.log('Register input:', {
-      email,
-      phone,
-      password
-    });
+    const payload = { password };
+    if (email) payload.email = email.trim();
+    if (phone) payload.phone = phone.trim();
+
+    userService.register(payload)
+      .then(() => {
+        window.location.href = '/login';
+      })
+      .catch(err => {
+        console.error('Registration failed:', err);
+        alert(err?.message || 'Registration failed');
+      });
   });
 
 }

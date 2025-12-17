@@ -55,49 +55,89 @@ function createUserCard(user, onDelete) {
     const card = document.createElement('div');
     card.className = 'post-card';
     
-    // User header
+    // User header with name
     const userHeader = document.createElement('div');
-    userHeader.style.marginBottom = '15px';
-    userHeader.style.display = 'flex';
-    userHeader.style.justifyContent = 'space-between';
-    userHeader.style.alignItems = 'center';
+    userHeader.className = 'user-card-header';
     
     const username = document.createElement('h3');
-    username.textContent = user.firstName + " " + user.lastName || user.name || 'Unknown User';
-    username.style.margin = '0';
+    username.className = 'post-title';
+    
+    // Handle name properly
+    const firstName = user.firstName || '';
+    const lastName = user.lastName || '';
+    const fullName = `${firstName} ${lastName}`.trim();
+    const displayName = fullName || user.name || user.username || 'Unknown User';
+
+    // Add unit number in front if available
+    const unitNumber = user.unitNumber || user.unit || user.apartment || user.apartment_number || user.apartmentNumber;
+        if (unitNumber) {
+            username.textContent = `${displayName} - Apt: ${unitNumber}`;
+        } else {
+            username.textContent = displayName;
+        }
     
     userHeader.appendChild(username);
     card.appendChild(userHeader);
     
-    // User details
+    // User details section
+    const detailsSection = document.createElement('div');
+    detailsSection.className = 'user-details-section';
+    
+    console.log(user);
+
+    // Email
     if (user.email) {
-        const email = document.createElement('p');
-        email.style.color = '#555';
-        email.style.margin = '5px 0';
-        email.textContent = `📧 ${user.email}`;
-        card.appendChild(email);
+        const emailDiv = document.createElement('div');
+        emailDiv.className = 'user-detail-item';
+        
+        const emailIcon = document.createElement('span');
+        emailIcon.className = 'user-detail-icon';
+        emailIcon.textContent = '📧';
+        
+        const emailText = document.createElement('span');
+        emailText.className = 'user-detail-text';
+        emailText.textContent = user.email;
+        
+        emailDiv.appendChild(emailIcon);
+        emailDiv.appendChild(emailText);
+        detailsSection.appendChild(emailDiv);
     }
     
-    if (user.apartment || user.apartment_number) {
-        const apartment = document.createElement('p');
-        apartment.style.color = '#555';
-        apartment.style.margin = '5px 0';
-        apartment.textContent = `🏠 Apartment ${user.apartment || user.apartment_number}`;
-        card.appendChild(apartment);
+    // Phone number
+    if (user.phone || user.phoneNumber || user.phone_number) {
+        const phoneDiv = document.createElement('div');
+        phoneDiv.className = 'user-detail-item';
+        
+        const phoneIcon = document.createElement('span');
+        phoneIcon.className = 'user-detail-icon';
+        phoneIcon.textContent = '📱';
+        
+        const phoneText = document.createElement('span');
+        phoneText.className = 'user-detail-text';
+        phoneText.textContent = user.phone || user.phoneNumber || user.phone_number;
+        
+        phoneDiv.appendChild(phoneIcon);
+        phoneDiv.appendChild(phoneText);
+        detailsSection.appendChild(phoneDiv);
     }
     
-    // Delete button
+    card.appendChild(detailsSection);
+    
+    // Delete button in actions container
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'post-actions';
+    
     const deleteBtn = createButton({
         label: '🗑️ Remove User',
         className: 'lc-button',
         onClick: () => onDelete(user.user_id || user.id)
     });
-    deleteBtn.style.marginTop = '15px';
     deleteBtn.style.backgroundColor = '#dc3545';
     deleteBtn.style.color = 'white';
     deleteBtn.style.border = 'none';
     
-    card.appendChild(deleteBtn);
+    actionsDiv.appendChild(deleteBtn);
+    card.appendChild(actionsDiv);
     
     return card;
 }

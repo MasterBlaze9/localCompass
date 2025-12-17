@@ -307,3 +307,38 @@
         padding: 32px;
     }
 }
+
+/* ===================================
+   USER CARD SPECIFIC STYLES
+   =================================== */
+
+.user-card-header {
+    margin-bottom: 16px;
+}
+
+.user-card-header h3 {
+    margin: 0;
+}
+
+.user-details-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.user-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #475569;
+    font-size: 14px;
+}
+
+.user-detail-icon {
+    flex-shrink: 0;
+}
+
+.user-detail-text {
+    word-break: break-word;
+}

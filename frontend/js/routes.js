@@ -23,6 +23,10 @@ export default {
     path: '/login',
     controller: 'loginController'
   },
+  tests: {
+    path: '/tests',
+    controller: 'testController'
+  },
   currentPath: {
     path: '',
     controller: ''

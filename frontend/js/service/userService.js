@@ -7,10 +7,11 @@ const userService = {
     // USERS MANAGEMENT
     // ========================================
 
-    // Fetch all users from backend
-    async getAllUsers() {
+    // Fetch all users from backend (optionally filter by buildingId)
+    async getAllUsers(buildingId) {
         try {
-            const response = await fetch(`${BASE_URL}/users`, {
+            const url = buildingId ? `${BASE_URL}/users?buildingId=${encodeURIComponent(buildingId)}` : `${BASE_URL}/users`;
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -28,6 +29,14 @@ const userService = {
             console.error('Error fetching users:', error);
             throw error;
         }
+    },
+
+    // Get current authenticated user
+    async getMe() {
+        const response = await fetch(`${BASE_URL}/users/me`, {
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+        });
+        return this.handleResponse(response);
     },
 
     // Get single user details by ID
@@ -53,26 +62,23 @@ const userService = {
         }
     },
 
-    // Add new user (by username)
+    // Add existing user to admin's building using email or phone
     async addUser(userData) {
         try {
-        const response = await fetch(`${BASE_URL}/users`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...auth.getAuthHeader()
-            },
-            body: JSON.stringify(userData)
-        });
-
+            const response = await fetch(`${BASE_URL}/users/add-to-my-building`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...auth.getAuthHeader()
+                },
+                body: JSON.stringify({ email: userData.email, phoneNumber: userData.phone })
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
             return await response.json();
-
         } catch (error) {
-            console.error('Error adding user:', error);
+            console.error('Error adding user to building:', error);
             throw error;
         }
     },

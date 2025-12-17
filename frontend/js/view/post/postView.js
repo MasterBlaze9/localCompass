@@ -1,17 +1,30 @@
 import createButton from '../../components/button/button.js';
 import "./post.css";
 
-function render(items) {
-const container = document.getElementById('container');
-if (!container) return;
+function render(items = [], currentUser = null, handlers = {}, currentScope = 'mine') {
+  const container = document.getElementById('container');
+  if (!container) return;
+  container.innerHTML = '';
 
-
-container.innerHTML = '';
+  // Tabs
+  const tabs = document.createElement('div');
+  tabs.style.display = 'flex';
+  tabs.style.gap = '8px';
+  tabs.style.margin = '8px 0 16px';
+  const mkTab = (label, scope) => {
+    const b = document.createElement('button');
+    b.textContent = label;
+    b.className = 'lc-button' + (currentScope === scope ? ' lc-button--primary' : '');
+    b.addEventListener('click', () => handlers?.onFilter && handlers.onFilter(scope));
+    return b;
+  };
+  tabs.append(mkTab('My posts', 'mine'), mkTab('Accepted', 'accepted'), mkTab('Available', 'available'));
+  container.appendChild(tabs);
 
   const list = document.createElement('div');
   list.className = 'posts-list';
 
-  if (items.length === 0) {
+  if (!items.length) {
     const empty = document.createElement('div');
     empty.className = 'empty';
     empty.textContent = 'No posts to display.';
@@ -31,7 +44,7 @@ container.innerHTML = '';
     const card = document.createElement('article');
     card.className = 'post-card';
 
-    /* ---------- HEADER ---------- */
+    // HEADER
     const header = document.createElement('header');
     header.className = 'post-card-header';
 
@@ -40,7 +53,6 @@ container.innerHTML = '';
 
     const avatar = document.createElement('div');
     avatar.className = 'post-avatar';
-
 
     const metaText = document.createElement('div');
     metaText.className = 'post-meta-text';
@@ -57,7 +69,7 @@ container.innerHTML = '';
     meta.append(avatar, metaText);
     header.appendChild(meta);
 
-    /* ---------- BODY ---------- */
+    // BODY
     const body = document.createElement('div');
     body.className = 'post-card-body';
 
@@ -75,7 +87,7 @@ container.innerHTML = '';
       body.appendChild(p);
     }
 
-    /* ---------- FOOTER ---------- */
+    // FOOTER
     const footer = document.createElement('footer');
     footer.className = 'post-card-footer';
 
@@ -90,18 +102,41 @@ container.innerHTML = '';
     const rightFooter = document.createElement('div');
     rightFooter.className = 'post-footer-right';
 
-    const replyButton = createButton({
-      label: 'Reply',
-      className: 'lc-button lc-button--primary',
-      onClick: () => {
+    const fullName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : '';
+    const isOwner = fullName && author === fullName;
 
-      }
-    });
-
-    rightFooter.appendChild(replyButton);
+    if (isOwner) {
+      const viewBtn = createButton({
+        label: 'View acceptances',
+        className: 'lc-button',
+        onClick: async () => {
+          viewBtn.disabled = true;
+          await handlers?.onViewAcceptances?.(post.id, (arr) => {
+            const mount = card.querySelector('.acceptances') || document.createElement('div');
+            mount.className = 'acceptances';
+            mount.innerHTML = '';
+            if (!arr || !arr.length) { mount.textContent = 'No acceptances yet.'; }
+            else {
+              const ul = document.createElement('ul');
+              arr.forEach(a => { const li = document.createElement('li'); li.textContent = `${a.userName} - ${a.status}`; ul.appendChild(li); });
+              mount.appendChild(ul);
+            }
+            card.appendChild(mount);
+          });
+          viewBtn.disabled = false;
+        }
+      });
+      rightFooter.appendChild(viewBtn);
+    } else {
+      const acceptBtn = createButton({
+        label: 'Accept',
+        className: 'lc-button lc-button--primary',
+        onClick: async () => { await handlers?.onAccept?.(post.id); }
+      });
+      rightFooter.appendChild(acceptBtn);
+    }
 
     footer.append(leftFooter, rightFooter);
-
 
     card.append(header, body, footer);
     list.appendChild(card);

@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface EventAttendeeRepository extends CrudRepository<EventAttendee, Long> {
 
     List<EventAttendee> findByEventId(Long eventId);
+    List<EventAttendee> findByUserId(Long userId);
     Optional<EventAttendee> findByEventIdAndUserId(Long eventId, Long userId);
 }

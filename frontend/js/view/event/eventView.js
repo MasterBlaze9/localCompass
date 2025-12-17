@@ -1,4 +1,4 @@
-function render(items = [], currentUser = null, handlers = {}) {
+function render(items = [], currentUser = null, handlers = {}, currentScope = 'mine') {
 	const container = document.getElementById('container')
 	if (!container) return;
 	container.innerHTML = '';
@@ -7,6 +7,21 @@ function render(items = [], currentUser = null, handlers = {}) {
 	const header = document.createElement('h1');
 	header.textContent = 'Events';
 	div.appendChild(header);
+
+	// Filter Tabs
+	const tabs = document.createElement('div');
+	tabs.style.display = 'flex';
+	tabs.style.gap = '8px';
+	tabs.style.margin = '8px 0 16px';
+	const mkTab = (label, scope) => {
+		const b = document.createElement('button');
+		b.textContent = label;
+		b.className = 'lc-button' + (currentScope === scope ? ' lc-button--primary' : '');
+		b.addEventListener('click', () => handlers?.onFilter && handlers.onFilter(scope));
+		return b;
+	};
+	tabs.append(mkTab('My events', 'mine'), mkTab('Attending', 'attending'), mkTab('Available', 'available'));
+	div.appendChild(tabs);
 
 	// Create Event button
 	const createBtn = document.createElement('button');

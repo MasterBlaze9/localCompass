@@ -3,8 +3,6 @@ import routes from "../../routes.js"
 import auth from "../../service/authService.js"
 
 export default function navBar() {
-
-	// If logged out, render nothing (hidden placeholder to allow replacement later)
 	const loggedIn = auth.isAuthenticated();
 	if (!loggedIn) {
 		const hidden = document.createElement('nav');
@@ -45,7 +43,7 @@ export default function navBar() {
 	const current = window.location.pathname
 
 	Object.entries(routes)
-		.filter(([key, val]) => key !== 'currentPath' && key !== 'login' && key !== 'register' && val?.controller && typeof val.path === 'string')
+		.filter(([key, val]) => key !== 'currentPath' && key !== 'login' && key !== 'register' && key !== 'admin' && val?.controller && typeof val.path === 'string')
 		.forEach(([key, val]) => {
 			const li = document.createElement('li')
 			li.className = 'nav-item'
@@ -63,6 +61,23 @@ export default function navBar() {
 			li.appendChild(a)
 			ul.appendChild(li)
 		})
+
+	// Conditionally add Admin link when user is admin
+	fetch('/api/users/me', { headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() } })
+		.then(r => r.ok ? r.json() : null)
+		.then(me => {
+			if (me?.admin) { // DTO exposes isAdmin via getter isAdmin()
+				const li = document.createElement('li');
+				li.className = 'nav-item';
+				const a = document.createElement('a');
+				a.className = 'nav-link';
+				a.href = routes.admin.path;
+				a.textContent = 'Admin';
+				if (routes.admin.path === current) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
+				li.appendChild(a);
+				ul.appendChild(li);
+			}
+		}).catch(() => {})
 
 	collapse.appendChild(ul)
 

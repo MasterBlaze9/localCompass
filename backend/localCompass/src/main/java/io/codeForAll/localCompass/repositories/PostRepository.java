@@ -11,9 +11,10 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByBuildingId(Long buildingId);
-    List<Post> findByBuildingIdAndStatus(Long buildingId, PostStatus status);
+    List<Post> findByBuildingIdAndStatusOrderByCreatedAtDesc(Long buildingId, PostStatus status);
     List<Post> findByUserId(Long userId);
-
+    List<Post> findByStatusOrderByCreatedAtAsc(PostStatus status);
+    List<Post> findByStatusOrderByCreatedAtDesc(PostStatus status);
 
 
 

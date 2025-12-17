@@ -65,6 +65,11 @@ export async function init() {
         ]
       });
     },
+    onAttend: async (eventId, cb) => {
+      if (!me?.id) { alert('Login required'); return; }
+      await eventService.joinEvent(eventId, me.id);
+      cb?.(true);
+    },
     onJoin: async (eventId) => {
       if (!me?.id) return alert('Login required');
       await eventService.joinEvent(eventId, me.id);

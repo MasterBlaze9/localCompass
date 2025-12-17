@@ -10,11 +10,9 @@ import userService from '../service/userService.js';
 let posts = [];
 
 // Initialize admin panel
-export async function init() {
+export async function init(_options = {}) {
     try {
         console.log('Loading admin panel...');
-
-        showLoading();
 
         // Load posts by default
         posts = await postService.getAllPosts();
@@ -50,14 +48,14 @@ async function handleDeletePost(postId) {
 }
 
 // Show loading state
-function showLoading() {
+function showLoading(message = 'Loading...') {
     const container = document.querySelector('#container');
     container.innerHTML = '';
 
     const loadingDiv = document.createElement('div');
     loadingDiv.style.padding = '40px';
     loadingDiv.style.textAlign = 'center';
-    loadingDiv.innerHTML = '<h2>Loading posts...</h2>';
+    loadingDiv.innerHTML = `<h2>${message}</h2>`;
 
     container.appendChild(loadingDiv);
 }
@@ -82,11 +80,13 @@ function showError(message) {
 let events = [];
 
 // Initialize events management
-export async function initEvents() {
+export async function initEvents(options = {}) {
+    const { skipLoading = false } = options;
     try {
         console.log('Loading events management...');
 
-        showLoading();
+        const shouldSkipLoading = skipLoading || (events && events.length > 0);
+        if (!shouldSkipLoading) showLoading('Loading events...');
 
         // Fetch events from backend
         events = await eventService.getAllEvents();
@@ -140,7 +140,7 @@ function createNavigation() {
     postsBtn.className = 'lc-button';
     postsBtn.style.padding = '10px 20px';
     postsBtn.onclick = async () => {
-        await init();
+        await init({ skipLoading: true });
     };
 
     // Events button
@@ -149,7 +149,7 @@ function createNavigation() {
     eventsBtn.className = 'lc-button';
     eventsBtn.style.padding = '10px 20px';
     eventsBtn.onclick = async () => {
-        await initEvents();
+        await initEvents({ skipLoading: true });
     };
 
     nav.appendChild(postsBtn);
@@ -165,11 +165,12 @@ function createNavigation() {
 let users = [];
 
 // Initialize users management
-export async function initUsers() {
+export async function initUsers(options = {}) {
+    const { skipLoading = false } = options;
     try {
         console.log('Loading users management...');
 
-        showLoading();
+        if (!skipLoading) showLoading('Loading users...');
 
         // Fetch users from backend
         users = await userService.getAllUsers();

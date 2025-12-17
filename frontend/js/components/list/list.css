@@ -71,7 +71,7 @@
     color: #1a1a1b;
 }
 
-.lc-button--primary {
+.lc-card .lc-button--primary {
     width: 100%;
     background: #2563eb;
     color: white;

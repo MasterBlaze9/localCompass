@@ -1,4 +1,6 @@
-const Spinner = {
+import './spinner.css';
+
+const spinner = {
     /**
      * Creates a spinner element
      * @param {string} size - 'sm' for small, 'md' for medium (default)
@@ -25,4 +27,4 @@ const Spinner = {
     }
 };
 
-export default Spinner;
+export default spinner;

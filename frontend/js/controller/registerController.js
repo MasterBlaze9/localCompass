@@ -17,9 +17,17 @@ export function init() {
   const toLogin = container.querySelector('#toLogin');
 
   signUpBtn.addEventListener('click', () => {
+    const firstName = container.querySelector('input[aria-label="First name"]')?.value?.trim();
+    const lastName = container.querySelector('input[aria-label="Last name"]')?.value?.trim();
     const email = container.querySelector('input[type="email"]').value;
     const phone = container.querySelector('input[type="tel"]')?.value;
     const password = container.querySelector('input[type="password"]').value;
+
+    // Mandatory first and last name
+    if (!firstName || !lastName) {
+      alert('First name and last name are required');
+      return;
+    }
 
     if ((!email && !phone) || !password) {
       alert('Email or phone and password are required');
@@ -36,7 +44,7 @@ export function init() {
       return;
     }
 
-    const payload = { password };
+    const payload = { firstName, lastName, password };
     if (email) payload.email = email.trim();
     if (phone) payload.phone = phone.trim();
 

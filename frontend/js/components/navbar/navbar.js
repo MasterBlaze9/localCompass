@@ -1,7 +1,15 @@
 import "./navbar.css"
 import routes from "../../routes.js"
+import auth from "../../service/authService.js"
 
 export default function navBar() {
+	const loggedIn = auth.isAuthenticated();
+	if (!loggedIn) {
+		const hidden = document.createElement('nav');
+		hidden.id = 'anchors';
+		hidden.style.display = 'none';
+		return hidden;
+	}
 
 	const navbar = document.createElement("nav")
 	navbar.id = "anchors"
@@ -35,7 +43,7 @@ export default function navBar() {
 	const current = window.location.pathname
 
 	Object.entries(routes)
-		.filter(([key, val]) => key !== 'currentPath' && val?.controller && typeof val.path === 'string')
+		.filter(([key, val]) => key !== 'currentPath' && key !== 'login' && key !== 'register' && key !== 'admin' && val?.controller && typeof val.path === 'string')
 		.forEach(([key, val]) => {
 			const li = document.createElement('li')
 			li.className = 'nav-item'
@@ -54,7 +62,36 @@ export default function navBar() {
 			ul.appendChild(li)
 		})
 
+	// Conditionally add Admin link when user is admin
+	fetch('/api/users/me', { headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() } })
+		.then(r => r.ok ? r.json() : null)
+		.then(me => {
+			if (me?.admin) { // DTO exposes isAdmin via getter isAdmin()
+				const li = document.createElement('li');
+				li.className = 'nav-item';
+				const a = document.createElement('a');
+				a.className = 'nav-link';
+				a.href = routes.admin.path;
+				a.textContent = 'Admin';
+				if (routes.admin.path === current) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
+				li.appendChild(a);
+				ul.appendChild(li);
+			}
+		}).catch(() => {})
+
 	collapse.appendChild(ul)
+
+	// Right side actions: Logout
+	const actions = document.createElement('div')
+	actions.className = 'd-flex ms-auto'
+	const logoutBtn = document.createElement('button')
+	logoutBtn.type = 'button'
+	logoutBtn.className = 'btn btn-outline-danger btn-sm'
+	logoutBtn.textContent = 'Logout'
+	logoutBtn.addEventListener('click', () => { auth.clearAuth(); window.location.href = '/login'; })
+	actions.appendChild(logoutBtn)
+	collapse.appendChild(actions)
+
 	container.appendChild(brand)
 	container.appendChild(toggler)
 	container.appendChild(collapse)

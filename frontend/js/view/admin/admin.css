@@ -1,0 +1,310 @@
+/* Admin Panel Styles - Unified with Post/Event Styles */
+
+/* ===================================
+   CONTAINER & LAYOUT
+   =================================== */
+
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.admin-container h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1b;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+}
+
+.admin-container > p {
+    color: #64748b;
+    font-size: 15px;
+    margin-bottom: 24px;
+    font-weight: 400;
+}
+
+/* ===================================
+   LISTS - MATCHING POST.CSS/EVENT.CSS
+   =================================== */
+
+.posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    margin-top: 24px;
+    align-items: center;
+}
+
+/* ===================================
+   CARDS - EXACT MATCH WITH POST.CSS
+   =================================== */
+
+.post-card {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #f0f2f5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    box-sizing: border-box;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.post-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* ===================================
+   HEADER SECTION
+   =================================== */
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+/* Avatar */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+/* Name and Status Container */
+.name-status-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.post-author-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1b;
+}
+
+.post-author-unit {
+    color: #64748b;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* ===================================
+   STATUS BADGES
+   =================================== */
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.status-open {
+    background-color: #10b981;
+    color: white;
+}
+
+.status-in-progress {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.status-closed {
+    background-color: #ef4444;
+    color: white;
+}
+
+/* ===================================
+   CATEGORY BADGES
+   =================================== */
+
+.category-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 12px;
+    text-transform: capitalize;
+}
+
+.category-mutual-aid {
+    background-color: #3b82f6;
+}
+
+.category-social {
+    background-color: #10b981;
+}
+
+.category-assistance {
+    background-color: #a855f7;
+}
+
+/* ===================================
+   TIME
+   =================================== */
+
+.post-time {
+    color: #94a3b8;
+    font-size: 13px;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+/* ===================================
+   CONTENT - MATCHING POST.CSS
+   =================================== */
+
+.post-title {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1b;
+}
+
+.post-description {
+    margin: 0;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.5;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+/* ===================================
+   FOOTER - MATCHING POST.CSS
+   =================================== */
+
+.post-footer {
+    display: flex;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed #e2e8f0;
+    margin-top: 12px;
+    font-size: 14px;
+    color: #64748b;
+    flex-wrap: wrap;
+}
+
+.post-location,
+.post-responses {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ===================================
+   ACTIONS
+   =================================== */
+
+.post-actions {
+    margin-top: 16px;
+}
+
+/* ===================================
+   BUTTONS - MATCHING POST.CSS/EVENT.CSS
+   =================================== */
+
+.lc-button {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.lc-button:hover {
+    background: #f8fafc;
+}
+
+.lc-button--primary {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.lc-button--primary:hover {
+    background: #1d4ed8;
+}
+
+.lc-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===================================
+   EMPTY STATE
+   =================================== */
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #94a3b8;
+    font-size: 16px;
+}
+
+/* ===================================
+   RESPONSIVE - TABLET
+   =================================== */
+
+@media (min-width: 768px) {
+    .admin-container {
+        padding: 32px;
+    }
+    
+    .admin-container h1 {
+        font-size: 36px;
+    }
+    
+    .post-card {
+        padding: 28px;
+    }
+}
+
+/* ===================================
+   RESPONSIVE - DESKTOP
+   =================================== */
+
+@media (min-width: 1024px) {
+    .admin-container {
+        padding: 48px;
+    }
+    
+    .admin-container h1 {
+        font-size: 40px;
+    }
+    
+    .post-card {
+        padding: 32px;
+    }
+}

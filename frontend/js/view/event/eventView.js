@@ -67,6 +67,7 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
 function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet = null, currentScope = 'mine') {
   const card = document.createElement('li');
   card.className = 'lc-card event-card';
+  card.style = " word-wrap: break-word;"
 
   // Title
   const t = document.createElement('h3');

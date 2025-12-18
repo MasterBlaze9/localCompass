@@ -238,10 +238,14 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
     attendBtn.style.minWidth = '0';
     attendBtn.style.padding = '10px 12px';
     attendBtn.style.whiteSpace = 'nowrap';
+    attendBtn.style.backgroundColor = '#2563eb';
+    attendBtn.style.color = '#fff';
+
     if (isAttending && currentScope === 'attending') {
       attendBtn.style.backgroundColor = '#dc3545';
       attendBtn.style.color = '#fff';
     }
+
     attendBtn.disabled = isAttending && currentScope !== 'attending';
     attendBtn.addEventListener('click', async () => {
       if (!isAttending) {

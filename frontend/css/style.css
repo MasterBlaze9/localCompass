@@ -98,11 +98,22 @@ textarea {
   min-height: 100vh;
 }
 
-@media (min-width: 768px) {
-  #container { padding: 30px; }
+@media (max-width: 600px) {
+  #container {
+    padding: 30px;
+  }
 }
+
+@media (min-width: 768px) {
+  #container {
+    padding: 30px;
+  }
+}
+
 @media (min-width: 1024px) {
-  #container { padding: 40px; }
+  #container {
+    padding: 40px;
+  }
 }
 
 /* ==========================================================================
@@ -193,9 +204,9 @@ textarea {
 }
 
 @media print,
-  (-webkit-min-device-pixel-ratio: 1.25),
-  (min-resolution: 1.25dppx),
-  (min-resolution: 120dpi) {
+(-webkit-min-device-pixel-ratio: 1.25),
+(min-resolution: 1.25dppx),
+(min-resolution: 120dpi) {
   /* Style adjustments for high resolution devices */
 }
 
@@ -206,6 +217,7 @@ textarea {
    ========================================================================== */
 
 @media print {
+
   *,
   *::before,
   *::after {
@@ -265,4 +277,3 @@ textarea {
     page-break-after: avoid;
   }
 }
-

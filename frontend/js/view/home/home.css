@@ -1,14 +1,3 @@
-/* Home View Styles - PERFECT SYMMETRY */
-
-/* ===================================
-   CONTAINER
-   =================================== */
-
-.home-view.home-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 24px;
-}
 
 /* ===================================
    SECTION BOXES (Reports, Posts, Events)
@@ -324,19 +313,12 @@
    =================================== */
 
 @media (max-width: 768px) {
-    .home-view.home-container {
-        padding: 16px;
-    }
-
-    .home-view .home-section {
-        padding: 16px;
-    }
-
+   
     .home-view .home-main-grid {
         grid-template-columns: 1fr;
         gap: 24px;
     }
-    
+
     .home-view .posts-list-home,
     .home-view .events-list-home {
         grid-template-rows: auto auto;

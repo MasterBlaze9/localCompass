@@ -1,6 +1,7 @@
 import reportService from '../service/reportService.js';
 import reportView from '../view/report/reportView.js';
 import openModal from "../components/modal/modal.js";
+import authService from '../service/authService.js';
 
 export async function init() {
   let items = [];
@@ -9,7 +10,7 @@ export async function init() {
   try {
     [items, me] = await Promise.all([
       reportService.getAllReports({ scope: currentScope }),
-      fetch('/api/users/me', { headers: { 'Content-Type': 'application/json', ...(await import('../service/authService.js')).default.getAuthHeader() } }).then(r => r.ok ? r.json() : null)
+      fetch('/api/users/me', { headers: { 'Content-Type': 'application/json', ...authService.getAuthHeader() } }).then(r => r.ok ? r.json() : null)
     ]);
   } catch (e) {
     items = [];

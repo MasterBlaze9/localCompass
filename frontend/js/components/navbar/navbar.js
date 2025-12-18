@@ -13,7 +13,7 @@ export default function navBar() {
 
 	const navbar = document.createElement("nav")
 	navbar.id = "anchors"
-	navbar.className = "navbar navbar-expand-lg navbar-light bg-light"
+	navbar.className = "navbar navbar-expand-lg navbar-light bg-white"
 
 	const container = document.createElement('div')
 	container.className = 'container-fluid'
@@ -21,7 +21,14 @@ export default function navBar() {
 	const brand = document.createElement('a')
 	brand.className = 'navbar-brand'
 	brand.href = routes.home?.path || '/'
-	brand.textContent = 'LocalCompass'
+
+	const logo = document.createElement('img')
+	logo.src = '/img/image.png'
+	logo.alt = 'LocalCompass Logo'
+	logo.style.height = '30px'
+	logo.style.verticalAlign = 'middle'
+
+	brand.appendChild(logo)
 
 	const toggler = document.createElement('button')
 	toggler.className = 'navbar-toggler'
@@ -77,7 +84,7 @@ export default function navBar() {
 				li.appendChild(a);
 				ul.appendChild(li);
 			}
-		}).catch(() => {})
+		}).catch(() => { })
 
 	collapse.appendChild(ul)
 

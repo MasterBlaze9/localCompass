@@ -69,23 +69,40 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
   card.className = 'lc-card event-card';
   card.style = " word-wrap: break-word;"
 
+  // HEADER (matching post card style)
+  const header = document.createElement('header');
+  header.className = 'event-card-header';
+
+  const meta = document.createElement('div');
+  meta.className = 'event-meta-header';
+
+  const avatar = document.createElement('div');
+  avatar.className = 'event-avatar';
+  const organizerName = ev.organizerName || ev.creatorName || 'Unknown';
+  avatar.textContent = organizerName.charAt(0).toUpperCase();
+
+  const metaText = document.createElement('div');
+  metaText.className = 'event-meta-text';
+
+  const organizerElement = document.createElement('div');
+  organizerElement.className = 'event-organizer';
+  const organizerUnit = ev.organizerUnit ? ` (Apt ${ev.organizerUnit})` : '';
+  organizerElement.textContent = `${organizerName}${organizerUnit}`;
+
+  const timeElement = document.createElement('div');
+  timeElement.className = 'event-time';
+  timeElement.textContent = getTimeAgo(ev.createdAt);
+
+  metaText.append(organizerElement, timeElement);
+  meta.append(avatar, metaText);
+  header.appendChild(meta);
+  card.appendChild(header);
+
   // Title
   const t = document.createElement('h3');
   t.textContent = ev.title || 'Untitled';
   t.style.marginBottom = '8px';
   card.appendChild(t);
-
-  // Meta Info
-  const meta = document.createElement('div');
-  meta.className = 'event-meta';
-  meta.style.marginBottom = '8px';
-  const when = document.createElement('span');
-  const dt = resolveEventDate(ev);
-  when.textContent = dt ? new Date(dt).toLocaleString() : '';
-  const where = document.createElement('span');
-  where.textContent = ev.location ? ` @ ${ev.location}` : '';
-  meta.append(when, where);
-  card.appendChild(meta);
 
   // Description
   if (ev.description) {
@@ -98,9 +115,9 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
 
   const footer = document.createElement('div');
   footer.style.display = 'flex';
+  footer.style.flexDirection = 'column';
   footer.style.gap = '8px';
   footer.style.marginTop = 'auto';
-  footer.style.flexWrap = 'nowrap';
   footer.style.width = '100%';
   footer.style.alignItems = 'stretch';
 
@@ -139,6 +156,12 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
   mount.style.marginTop = '10px';
 
   if (isCreator) {
+    // Create a row container for View attendees and Edit buttons
+    const buttonRow = document.createElement('div');
+    buttonRow.style.display = 'flex';
+    buttonRow.style.gap = '8px';
+    buttonRow.style.alignItems = 'stretch';
+
     const viewBtn = document.createElement('button');
     viewBtn.textContent = 'View attendees';
     viewBtn.className = 'lc-button';
@@ -168,7 +191,7 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
       await loadAttendees();
       viewBtn.disabled = false;
     });
-    footer.appendChild(viewBtn);
+    buttonRow.appendChild(viewBtn);
 
     const editBtn = document.createElement('button');
     editBtn.textContent = 'Edit';
@@ -252,17 +275,17 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
         ]
       });
     });
-    footer.appendChild(editBtn);
+    buttonRow.appendChild(editBtn);
+    footer.appendChild(buttonRow);
 
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'Delete';
     deleteBtn.className = 'lc-button';
-    deleteBtn.style.flex = '1';
-    deleteBtn.style.minWidth = '0';
     deleteBtn.style.padding = '10px 12px';
     deleteBtn.style.whiteSpace = 'nowrap';
     deleteBtn.style.backgroundColor = '#dc3545';
     deleteBtn.style.color = '#fff';
+    deleteBtn.style.width = '100%';
     deleteBtn.addEventListener('click', async () => {
       if (confirm('Are you sure you want to delete this event?')) {
         await handlers?.onDelete?.(eventId);
@@ -316,6 +339,17 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
   card.appendChild(mount);
 
   return card;
+}
+
+function getTimeAgo(timestamp) {
+  if (!timestamp) return 'Recently';
+  const now = new Date();
+  const dt = new Date(timestamp);
+  const diff = Math.floor((now - dt) / 1000);
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
 }
 
 export default { render };

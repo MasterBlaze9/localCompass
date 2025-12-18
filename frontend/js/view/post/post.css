@@ -33,10 +33,7 @@
     flex-direction: column;
 }
 
-.post-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
+
 
 /* Post Card Header */
 .post-card-header {
@@ -162,18 +159,12 @@
     gap: 8px;
 }
 
-.lc-button:hover {
-    background: #f8fafc;
-}
+
 
 .lc-button--primary {
     background: #2563eb;
     color: white;
     border-color: #2563eb;
-}
-
-.lc-button--primary:hover {
-    background: #1d4ed8;
 }
 
 .lc-button:disabled {

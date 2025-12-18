@@ -24,11 +24,6 @@
     box-sizing: border-box;
     transition: transform 0.2s ease;
 }
-
-.lc-card:hover {
-    transform: translateY(-4px);
-}
-
 /* --- Responsive Breakpoints --- */
 
 /* Modifiers for dynamic column counts */

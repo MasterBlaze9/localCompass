@@ -7,6 +7,9 @@ function render(users, onDelete, onAdd) {
     const container = document.querySelector('#container');
     container.innerHTML = '';
 
+    // Create admin div container
+    const adminDiv = document.createElement('div');
+    adminDiv.className = 'admin-view';
 
     // Header
     const header = document.createElement('h1');

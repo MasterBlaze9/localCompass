@@ -101,7 +101,9 @@ function render(events, onDelete) {
     const container = document.querySelector('#container');
     container.innerHTML = '';
 
-
+    // Create admin div container
+    const adminDiv = document.createElement('div');
+    adminDiv.className = 'admin-view';
 
     // Header
     const header = document.createElement('h1');
@@ -138,16 +140,15 @@ function createEventCard(event, onDelete) {
 
     // Organizer info
     const organizerInfo = document.createElement('div');
-    organizerInfo.style.marginBottom = '10px';
+    organizerInfo.className = 'post-header';
 
     const organizerName = document.createElement('strong');
+    organizerName.className = 'post-author-name';
     organizerName.textContent = resolveOrganizerName(event);
     organizerInfo.appendChild(organizerName);
 
     const eventDate = document.createElement('span');
-    eventDate.style.color = '#666';
-    eventDate.style.fontSize = '14px';
-    eventDate.style.marginLeft = '10px';
+    eventDate.className = 'post-time';
     eventDate.textContent = formatDate(resolveEventDate(event));
     organizerInfo.appendChild(eventDate);
 
@@ -155,46 +156,48 @@ function createEventCard(event, onDelete) {
 
     // Title
     const title = document.createElement('h3');
+    title.className = 'post-title';
     title.textContent = event.title || event.name;
-    title.style.margin = '10px 0';
     card.appendChild(title);
 
     // Description
     const description = document.createElement('p');
+    description.className = 'post-description';
     description.textContent = event.description;
-    description.style.color = '#555';
     card.appendChild(description);
 
     // Footer (location & attendees)
     const footer = document.createElement('div');
-    footer.style.marginTop = '10px';
-    footer.style.fontSize = '14px';
-    footer.style.color = '#666';
+    footer.className = 'post-footer';
 
     const location = document.createElement('span');
+    location.className = 'post-location';
     location.textContent = `📍 ${event.location || 'No location'}`;
     footer.appendChild(location);
 
     const attendeesCount = resolveAttendeeCount(event);
     const attendees = document.createElement('span');
-    attendees.style.marginLeft = '15px';
+    attendees.className = 'post-responses';
     attendees.textContent = `👥 ${attendeesCount} attending`;
     footer.appendChild(attendees);
 
     card.appendChild(footer);
 
     // Delete button
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'post-actions';
+
     const deleteBtn = createButton({
         label: '🗑️ Delete',
         className: 'lc-button',
         onClick: () => onDelete(event.id)
     });
-    deleteBtn.style.marginTop = '10px';
     deleteBtn.style.backgroundColor = '#dc3545';
     deleteBtn.style.color = 'white';
     deleteBtn.style.border = 'none';
 
-    card.appendChild(deleteBtn);
+    actionsDiv.appendChild(deleteBtn);
+    card.appendChild(actionsDiv);
 
     return card;
 }

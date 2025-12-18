@@ -227,6 +227,7 @@
 .status-closed {
     background-color: #ef4444;
     color: white;
+    
 }
 
 .category-badge {
@@ -335,9 +336,6 @@
     gap: 8px;
 }
 
-.lc-button:hover {
-    background: #f8fafc;
-}
 
 .lc-button--primary {
     background: #2563eb;
@@ -416,9 +414,6 @@
     }
 }
 
-/* ===================================
-   RESPONSIVE - DESKTOP
-   =================================== */
 
 @media (min-width: 1024px) {
     .admin-container {

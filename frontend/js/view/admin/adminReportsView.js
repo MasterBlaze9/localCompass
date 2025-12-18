@@ -6,8 +6,7 @@ function render(reports, onDelete) {
   const container = document.querySelector('#container');
   container.innerHTML = '';
 
-  const adminDiv = document.createElement('div');
-  adminDiv.className = 'admin-container';
+
 
   const header = document.createElement('h1');
   header.textContent = 'Admin Panel - Reports Management';

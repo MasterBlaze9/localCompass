@@ -7,9 +7,9 @@ function render(posts, onDelete) {
     const container = document.getElementById('container');
     container.innerHTML = '';
 
-    // Main wrapper
+    // Create admin div container
     const adminDiv = document.createElement('div');
-    adminDiv.className = 'admin-container';
+    adminDiv.className = 'admin-view';
 
     // Header
     const header = document.createElement('h1');

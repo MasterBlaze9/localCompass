@@ -15,6 +15,11 @@ html {
   color: #222;
   font-size: 1em;
   line-height: 1.4;
+  background: #f5f7fb;
+}
+
+body {
+  background: #f5f7fb;
 }
 
 /*
@@ -86,9 +91,11 @@ textarea {
 
 /* App container aligned like admin */
 #container {
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0;
+  background: #f5f7fb;
+  min-height: 100vh;
 }
 
 @media (min-width: 768px) {

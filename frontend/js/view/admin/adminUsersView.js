@@ -30,6 +30,7 @@ function render(users, onDelete, onAdd) {
         className: 'lc-button lc-button--primary',
         onClick: onAdd
     });
+    addBtn.style.width = '100%';
     addBtn.style.marginBottom = '20px';
     adminDiv.appendChild(addBtn);
 
@@ -45,7 +46,7 @@ function render(users, onDelete, onAdd) {
     });
     listComponent.updateData(Promise.resolve(users));
     const ul = document.querySelector('#admin-users-list-mount .lc-list-group');
-    if (ul) ul.classList.add('lc-cols-3');
+    if (ul) ul.classList.add('lc-cols-2');
 }
 
 // Create a single user card
@@ -67,13 +68,16 @@ function createUserCard(user, onDelete) {
     userHeader.appendChild(username);
     card.appendChild(userHeader);
 
-    // User details
+    // User details container (will grow to fill available space)
+    const detailsContainer = document.createElement('div');
+    detailsContainer.style.flex = '1';
+
     if (user.email) {
         const email = document.createElement('p');
         email.style.color = '#555';
         email.style.margin = '5px 0';
         email.textContent = `📧 ${user.email}`;
-        card.appendChild(email);
+        detailsContainer.appendChild(email);
     }
 
     if (user.apartment || user.apartment_number) {
@@ -81,8 +85,10 @@ function createUserCard(user, onDelete) {
         apartment.style.color = '#555';
         apartment.style.margin = '5px 0';
         apartment.textContent = `🏠 Apartment ${user.apartment || user.apartment_number}`;
-        card.appendChild(apartment);
+        detailsContainer.appendChild(apartment);
     }
+
+    card.appendChild(detailsContainer);
 
     // Delete button
     const deleteBtn = createButton({
@@ -90,7 +96,7 @@ function createUserCard(user, onDelete) {
         className: 'lc-button',
         onClick: () => onDelete(user.user_id || user.id)
     });
-    deleteBtn.style.marginTop = '15px';
+    deleteBtn.style.marginTop = 'auto';
     deleteBtn.style.backgroundColor = '#dc3545';
     deleteBtn.style.color = 'white';
     deleteBtn.style.border = 'none';

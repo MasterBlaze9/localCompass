@@ -6,6 +6,13 @@ function render(items = [], me, handlers = {}, scope = 'mine') {
   if (!container) return;
   container.innerHTML = '';
 
+  // Header
+  const header = document.createElement('h1');
+  header.textContent = 'Reports';
+  header.style.textAlign = 'center';
+  header.style.marginBottom = '24px';
+  container.appendChild(header);
+
   // Tabs (match posts/events style, without All)
   const tabs = document.createElement('div');
   tabs.style.display = 'flex';
@@ -82,7 +89,7 @@ function createReportCard(r, me, handlers = {}) {
   const isOwner = me && (r.authorId ? r.authorId === me.id : true);
   if (isOwner) {
     const editBtn = document.createElement('button');
-    editBtn.className = 'lc-button';
+    editBtn.className = 'lc-button lc-button--primary';
     editBtn.textContent = 'Edit';
     editBtn.style.flex = '1';
     editBtn.style.minWidth = '0';
@@ -99,11 +106,13 @@ function createReportCard(r, me, handlers = {}) {
           content: form,
           actions: [
             { label: 'Cancel', className: 'lc-button lc-button--secondary' },
-            { label: 'Save', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
+            {
+              label: 'Save', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
                 if (!tInput.value.trim()) { alert('Title required'); return; }
                 await handlers?.onEdit?.(r.id, { title: tInput.value.trim(), description: dInput.value });
                 close();
-              } }
+              }
+            }
           ]
         });
       });
@@ -114,6 +123,8 @@ function createReportCard(r, me, handlers = {}) {
   const del = document.createElement('button');
   del.className = 'lc-button lc-button--danger';
   del.textContent = 'Delete';
+  del.style.backgroundColor = '#dc3545';
+  del.style.color = '#fff';
   del.addEventListener('click', () => handlers?.onDelete?.(r.id));
   del.style.flex = '1';
   del.style.minWidth = '0';

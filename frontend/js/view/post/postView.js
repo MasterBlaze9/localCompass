@@ -9,6 +9,13 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
   if (!container) return;
   container.innerHTML = '';
 
+  // Header
+  const header = document.createElement('h1');
+  header.textContent = 'Posts';
+  header.style.textAlign = 'center';
+  header.style.marginBottom = '24px';
+  container.appendChild(header);
+
   // Tabs
   const tabs = document.createElement('div');
   tabs.style.display = 'flex';
@@ -195,7 +202,7 @@ function createPostCard(post, currentUser = null, handlers = {}) {
 
     const editBtn = createButton({
       label: 'Edit',
-      className: 'lc-button',
+      className: 'lc-button lc-button--primary',
       onClick: () => {
         const form = document.createElement('div');
         const titleInput = document.createElement('input');

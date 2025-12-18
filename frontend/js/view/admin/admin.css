@@ -69,6 +69,8 @@
     align-items: center;
     gap: 12px;
     margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #e2e8f0;
 }
 
 /* Avatar */
@@ -220,6 +222,8 @@
 
 .post-actions {
     margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed #e2e8f0;
 }
 
 /* ===================================
@@ -341,4 +345,20 @@
 
 .user-detail-text {
     word-break: break-word;
+}
+
+/* ===================================
+   EVENT CARD SPECIFIC STYLES
+   =================================== */
+
+.event-organizer-info {
+    margin-bottom: 12px;
+    /* padding-bottom: 12px;
+    border-bottom: 1px dashed #e2e8f0; */
+}
+
+.event-content-section {
+    margin-bottom: 12px;
+    /* padding-bottom: 12px;
+    border-bottom: 1px dashed #e2e8f0;*/
 }

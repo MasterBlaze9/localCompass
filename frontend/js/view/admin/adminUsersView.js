@@ -55,36 +55,47 @@ function createUserCard(user, onDelete) {
     const card = document.createElement('div');
     card.className = 'post-card';
     
-    // User header with name
-    const userHeader = document.createElement('div');
-    userHeader.className = 'user-card-header';
-    
-    const username = document.createElement('h3');
-    username.className = 'post-title';
-    
     // Handle name properly
     const firstName = user.firstName || '';
     const lastName = user.lastName || '';
     const fullName = `${firstName} ${lastName}`.trim();
     const displayName = fullName || user.name || user.username || 'Unknown User';
-
-    // Add unit number in front if available
-    const unitNumber = user.unitNumber || user.unit || user.apartment || user.apartment_number || user.apartmentNumber;
-        if (unitNumber) {
-            username.textContent = `${displayName} - Apt: ${unitNumber}`;
-        } else {
-            username.textContent = displayName;
-        }
     
-    userHeader.appendChild(username);
-    card.appendChild(userHeader);
+    // Get unit number
+    const unitNumber = user.unitNumber || user.unit || user.apartment || user.apartment_number || user.apartmentNumber;
+    
+    // User header - Avatar + Name (matching post-header structure)
+    const userInfo = document.createElement('div');
+    userInfo.className = 'post-header';
+    
+    // Avatar
+    const avatar = document.createElement('div');
+    avatar.className = 'user-avatar';
+    avatar.style.backgroundColor = getAvatarColor(displayName);
+    avatar.textContent = getInitials(displayName);
+    userInfo.appendChild(avatar);
+    
+    // Name container
+    const nameContainer = document.createElement('div');
+    nameContainer.className = 'name-status-container';
+    
+    // User name with unit
+    const userName = document.createElement('strong');
+    userName.className = 'post-author-name';
+    if (unitNumber) {
+        userName.textContent = `${displayName} - Apt: ${unitNumber}  `;
+    } else {
+        userName.textContent = displayName;
+    }
+    nameContainer.appendChild(userName);
+    
+    userInfo.appendChild(nameContainer);
+    card.appendChild(userInfo);
     
     // User details section
     const detailsSection = document.createElement('div');
     detailsSection.className = 'user-details-section';
     
-    console.log(user);
-
     // Email
     if (user.email) {
         const emailDiv = document.createElement('div');
@@ -123,7 +134,7 @@ function createUserCard(user, onDelete) {
     
     card.appendChild(detailsSection);
     
-    // Delete button in actions container
+    // Delete button (matching adminView.js structure)
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'post-actions';
     
@@ -177,6 +188,33 @@ function createNavButtons() {
     nav.appendChild(usersBtn);
     
     return nav;
+}
+
+// Helper: Get initials from name
+function getInitials(name) {
+    if (!name) return '?';
+    const parts = name.trim().split(' ');
+    if (parts.length === 1) {
+        return parts[0].charAt(0).toUpperCase();
+    }
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+}
+
+// Helper: Get avatar color based on name
+function getAvatarColor(name) {
+    const colors = [
+        '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', 
+        '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'
+    ];
+    
+    if (!name) return colors[0];
+    
+    // Generate color based on name
+    const hash = name.split('').reduce((acc, char) => {
+        return char.charCodeAt(0) + ((acc << 5) - acc);
+    }, 0);
+    
+    return colors[Math.abs(hash) % colors.length];
 }
 
 export default { render };

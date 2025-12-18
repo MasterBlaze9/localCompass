@@ -7,30 +7,27 @@ const eventService = {
     // ========================================
     // EVENTS MANAGEMENT
     // ========================================
-    
-    // Fetch all events from backend
-    async getAllEvents() {
+
+    // Fetch events (optional params: scope, buildingId, status)
+    async getAllEvents(params = {}) {
         try {
-            const response = await fetch(`${BASE_URL}/events`, {
+            const q = new URLSearchParams(params).toString();
+            const url = q ? `${BASE_URL}/events?${q}` : `${BASE_URL}/events`;
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     ...auth.getAuthHeader()
                 }
             });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return await response.json();
-            
         } catch (error) {
             console.error('Error fetching events:', error);
             throw error;
         }
     },
-    
+
     async createEvent(payload) {
         const response = await fetch(`${BASE_URL}/events`, {
             method: 'POST',
@@ -40,13 +37,26 @@ const eventService = {
         return this.handleResponse(response);
     },
 
-    async joinEvent(eventId, userId) {
-        const response = await fetch(`${BASE_URL}/events/${eventId}/attendees?userId=${encodeURIComponent(userId)}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+    async updateEvent(id, payload) {
+        const response = await fetch(`${BASE_URL}/events/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() },
+            body: JSON.stringify(payload)
         });
         return this.handleResponse(response);
     },
+
+  async joinEvent(eventId) {
+    
+    const response = await fetch(`${BASE_URL}/events/${eventId}/attendees`, {
+      method: 'POST', // Changed from PATCH to POST
+      headers: {
+        'Content-Type': 'application/json',
+        ...auth.getAuthHeader()
+      }
+    });
+    return this.handleResponse(response);
+  },
 
     async getAttendees(eventId) {
         const response = await fetch(`${BASE_URL}/events/${eventId}/attendees`, {
@@ -65,17 +75,36 @@ const eventService = {
                     ...auth.getAuthHeader()
                 }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             return await response.json();
-            
+
         } catch (error) {
             console.error('Error deleting event:', error);
             throw error;
         }
+    },
+
+    async removeAttendance(eventId, userId) {
+        const url = userId ? `${BASE_URL}/events/${eventId}/attendees/${userId}` : `${BASE_URL}/events/${eventId}/attendees`;
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+        });
+        if (response.status === 204) return true;
+        return this.handleResponse(response);
+    },
+
+    // Common response handler
+    async handleResponse(response) {
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data?.message || `HTTP error! status: ${response.status}`);
+        }
+        return data;
     }
 
 }

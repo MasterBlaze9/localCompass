@@ -8,8 +8,8 @@ export async function init() {
         // Fetch data in parallel
         const [reports, posts, events] = await Promise.all([
             reportService.getAllReports({ scope: 'building' }).catch(() => []),
-            postService.getAllPosts({ scope: 'mine' }).catch(() => []),
-            eventService.getAllEvents({ scope: 'mine' }).catch(() => [])
+            postService.getAllPosts({ scope: 'building' }).catch(() => []),
+            eventService.getAllEvents({ scope: 'building' }).catch(() => [])
         ]);
 
         // Sort reports by most recent first
@@ -42,10 +42,10 @@ export async function init() {
 
         // Render the home view
         homeView.render({
-        reports: recentReport,
-        posts: recentPosts,
-        events: recentEvents
-});
+            reports: recentReport,
+            posts: recentPosts,
+            events: recentEvents
+        });
 
     } catch (error) {
         console.error('Error loading home page:', error);

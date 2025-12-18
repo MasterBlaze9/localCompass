@@ -3,7 +3,7 @@ import createButton from "../../components/button/button.js";
 
 function render(data) {
     const { reports = [], posts = [], events = [] } = data;
-    
+
     const container = document.querySelector('#container');
     container.innerHTML = '';
 
@@ -261,7 +261,7 @@ function createEventCard(event) {
     // Organizer
     const organizer = document.createElement('strong');
     organizer.className = 'post-author-name';
-    organizer.textContent = event.organizer || event.organizerName || 'Anonymous';
+    organizer.textContent = event.creatorName || event.organizerName || event.organizer || 'Anonymous';
     card.appendChild(organizer);
 
     const eventDate = document.createElement('span');

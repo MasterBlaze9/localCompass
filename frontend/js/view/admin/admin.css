@@ -1,31 +1,6 @@
 /* Admin Panel Styles - Unified with Post/Event Styles */
 
 /* ===================================
-   CONTAINER & LAYOUT
-   =================================== */
-
-.admin-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 24px;
-}
-
-.admin-container h1 {
-    font-size: 32px;
-    font-weight: 700;
-    color: #1a1a1b;
-    margin-bottom: 8px;
-    letter-spacing: -0.02em;
-}
-
-.admin-container > p {
-    color: #64748b;
-    font-size: 15px;
-    margin-bottom: 24px;
-    font-weight: 400;
-}
-
-/* ===================================
    LISTS - MATCHING POST.CSS/EVENT.CSS
    =================================== */
 
@@ -273,38 +248,6 @@
     font-size: 16px;
 }
 
-/* ===================================
-   RESPONSIVE - TABLET
-   =================================== */
 
-@media (min-width: 768px) {
-    .admin-container {
-        padding: 32px;
-    }
-    
-    .admin-container h1 {
-        font-size: 36px;
-    }
-    
-    .post-card {
-        padding: 28px;
-    }
-}
 
-/* ===================================
-   RESPONSIVE - DESKTOP
-   =================================== */
 
-@media (min-width: 1024px) {
-    .admin-container {
-        padding: 48px;
-    }
-    
-    .admin-container h1 {
-        font-size: 40px;
-    }
-    
-    .post-card {
-        padding: 32px;
-    }
-}

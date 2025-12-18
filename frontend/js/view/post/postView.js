@@ -164,16 +164,21 @@ function createPostCard(post, currentUser = null, handlers = {}) {
   const footer = document.createElement('footer');
   footer.className = 'post-card-footer';
   footer.style.display = 'flex';
+  footer.style.flexDirection = 'column';
   footer.style.gap = '8px';
   footer.style.marginTop = 'auto';
-  footer.style.alignItems = 'stretch';
   footer.style.width = '100%';
-  footer.style.flexWrap = 'nowrap';
 
   const fullName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : '';
   const isOwner = fullName && author === fullName;
 
   if (isOwner) {
+    // Create a row container for View acceptances and Edit buttons
+    const buttonRow = document.createElement('div');
+    buttonRow.style.display = 'flex';
+    buttonRow.style.gap = '8px';
+    buttonRow.style.alignItems = 'stretch';
+    
     const viewBtn = createButton({
       label: 'View acceptances',
       className: 'lc-button',
@@ -198,7 +203,7 @@ function createPostCard(post, currentUser = null, handlers = {}) {
     viewBtn.style.minWidth = '0';
     viewBtn.style.padding = '10px 12px';
     viewBtn.style.whiteSpace = 'nowrap';
-    footer.appendChild(viewBtn);
+    buttonRow.appendChild(viewBtn);
 
     const editBtn = createButton({
       label: 'Edit',
@@ -235,7 +240,9 @@ function createPostCard(post, currentUser = null, handlers = {}) {
     editBtn.style.minWidth = '0';
     editBtn.style.padding = '10px 12px';
     editBtn.style.whiteSpace = 'nowrap';
-    footer.appendChild(editBtn);
+    buttonRow.appendChild(editBtn);
+
+    footer.appendChild(buttonRow);
 
     const deleteBtn = createButton({
       label: 'Delete',
@@ -252,12 +259,11 @@ function createPostCard(post, currentUser = null, handlers = {}) {
         }
       }
     });
-    deleteBtn.style.flex = '1';
-    deleteBtn.style.minWidth = '0';
     deleteBtn.style.padding = '10px 12px';
     deleteBtn.style.whiteSpace = 'nowrap';
     deleteBtn.style.backgroundColor = '#ef4444';
     deleteBtn.style.color = '#fff';
+    deleteBtn.style.width = '100%';
     footer.appendChild(deleteBtn);
   } else {
     // Check if current user has already accepted this post

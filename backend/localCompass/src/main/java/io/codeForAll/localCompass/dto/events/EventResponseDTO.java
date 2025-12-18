@@ -13,6 +13,7 @@ public class EventResponseDTO {
     private EventStatus status;
     private String creatorName;
     private String buildingName;
+    private Integer attendeesCount; // total attendees
 
     public EventResponseDTO(Event event) {
         this.id = event.getId();
@@ -42,5 +43,7 @@ public class EventResponseDTO {
     public void setCreatorName(String creatorName) { this.creatorName = creatorName; }
     public String getBuildingName() { return buildingName; }
     public void setBuildingName(String buildingName) { this.buildingName = buildingName; }
+    public Integer getAttendeesCount() { return attendeesCount; }
+    public void setAttendeesCount(Integer attendeesCount) { this.attendeesCount = attendeesCount; }
 }
 

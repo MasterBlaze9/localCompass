@@ -13,4 +13,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByBuildingId(Long buildingId);
     List<Event> findByBuildingIdAndStatus(Long buildingId, EventStatus status);
     List<Event> findByBuildingIdOrderByDatetimeAsc(Long buildingId);
+    List<Event> findEventByStatusOrderByDatetimeAsc(EventStatus status);
+    List<Event> findEventByStatusOrderByDatetimeDesc(EventStatus status);
 }

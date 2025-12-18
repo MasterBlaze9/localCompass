@@ -49,7 +49,7 @@ function createReportsSection(reports) {
     const viewAllBtn = createButton({
         label: 'View All →',
         className: 'lc-button',
-        onClick: () => window.location.href = '/admin'
+        onClick: () => window.location.href = '/reports'
     });
     header.appendChild(viewAllBtn);
 
@@ -69,15 +69,15 @@ function createReportsSection(reports) {
 }
 
 function createReportCard(report) {
-    const card = document.createElement('div');
-    card.className = 'report-card';
-    card.onclick = () => window.location.href = '/admin';
+    const content = document.createElement('div');
+    content.className = 'report-content';
+    content.onclick = () => window.location.href = '/reports';
 
     // Title
     const title = document.createElement('h3');
     title.className = 'post-title';
     title.textContent = report.title || 'Untitled Report';
-    card.appendChild(title);
+    content.appendChild(title);
 
     // Status Badge
     const status = document.createElement('span');
@@ -85,23 +85,23 @@ function createReportCard(report) {
     const statusText = report.status || 'OPEN';
     status.className += ` status-${statusText.toLowerCase().replace(' ', '-')}`;
     status.textContent = statusText;
-    card.appendChild(status);
+    content.appendChild(status);
 
     // Description
     if (report.description) {
         const desc = document.createElement('p');
         desc.className = 'post-description';
         desc.textContent = report.description;
-        card.appendChild(desc);
+        content.appendChild(desc);
     }
 
     // Timestamp
     const time = document.createElement('span');
     time.className = 'post-time';
     time.textContent = getTimeAgo(report.createdAt || report.timestamp);
-    card.appendChild(time);
+    content.appendChild(time);
 
-    return card;
+    return content;
 }
 
 // ========================================
@@ -148,6 +148,10 @@ function createPostsSection(posts) {
 }
 
 function createPostCard(post) {
+
+    console.log('📝 Post data:', post); // ADD THIS LINE
+    console.log('📝 Description:', post.description); // ADD THIS LINE
+
     const card = document.createElement('div');
     card.className = 'post-card';
     card.onclick = () => window.location.href = '/posts';
@@ -200,10 +204,10 @@ function createPostCard(post) {
     title.textContent = post.title;
     card.appendChild(title);
 
-    // Description
+    // Description (check both 'content' and 'description' fields)
     const desc = document.createElement('p');
     desc.className = 'post-description';
-    desc.textContent = truncateText(post.description, 100);
+    desc.textContent = truncateText(post.content || post.description, 100);
     card.appendChild(desc);
 
     return card;

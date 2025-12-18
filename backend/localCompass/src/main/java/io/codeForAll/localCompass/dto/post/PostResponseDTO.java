@@ -14,6 +14,9 @@ public class PostResponseDTO {
     private String authorName;
     private String authorUnit;
     private Long authorId;
+    private String buildingName;
+    private Integer acceptancesCount; // total acceptances/responses
+    private Boolean acceptedByMe; // whether the current user has accepted this post
 
     public PostResponseDTO() {}
 
@@ -71,5 +74,22 @@ public class PostResponseDTO {
 
     public void setAuthorUnit(String authorUnit) {
         this.authorUnit = authorUnit;
+    }
+
+    public Long getAuthorId() { return authorId; }
+    public void setAuthorId(Long authorId) { this.authorId = authorId; }
+
+    public String getBuildingName() { return buildingName; }
+    public void setBuildingName(String buildingName) { this.buildingName = buildingName; }
+
+    public Integer getAcceptancesCount() { return acceptancesCount; }
+    public void setAcceptancesCount(Integer acceptancesCount) { this.acceptancesCount = acceptancesCount; }
+
+    public Boolean getAcceptedByMe() {
+        return acceptedByMe;
+    }
+
+    public void setAcceptedByMe(Boolean acceptedByMe) {
+        this.acceptedByMe = acceptedByMe;
     }
 }

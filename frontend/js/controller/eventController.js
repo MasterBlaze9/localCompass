@@ -65,14 +65,39 @@ export async function init() {
         ]
       });
     },
+    onAttend: async (eventId, cb) => {
+      if (!me?.id) { alert('Login required'); return; }
+      await eventService.joinEvent(eventId, me.id);
+      cb?.(true);
+    },
     onJoin: async (eventId) => {
       if (!me?.id) return alert('Login required');
       await eventService.joinEvent(eventId, me.id);
       alert('Joined event!');
     },
+    onUnattend: async (eventId) => {
+      if (!me?.id) return alert('Login required');
+      await eventService.removeAttendance(eventId);
+      const [newItems, attendingRes] = await Promise.all([
+        eventService.getAllEvents({ scope: currentScope }),
+        eventService.getAllEvents({ scope: 'attending' })
+      ]);
+      attendingIdSet = new Set((attendingRes || []).map(ev => (ev.id ?? ev.event_id ?? ev.eventId)));
+      eventView.render(newItems, me, handlers, currentScope, attendingIdSet);
+    },
     onViewAttendees: async (eventId, cb) => {
       const list = await eventService.getAttendees(eventId);
       cb(list);
+    },
+    onEdit: async (eventId, data) => {
+      if (!me?.id) return alert('Login required');
+      await eventService.updateEvent(eventId, data);
+      const [newItems, attendingRes] = await Promise.all([
+        eventService.getAllEvents({ scope: currentScope }),
+        eventService.getAllEvents({ scope: 'attending' })
+      ]);
+      attendingIdSet = new Set((attendingRes || []).map(ev => (ev.id ?? ev.event_id ?? ev.eventId)));
+      eventView.render(newItems, me, handlers, currentScope, attendingIdSet);
     }
   };
 

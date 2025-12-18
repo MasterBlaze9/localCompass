@@ -1,27 +1,28 @@
 // Admin Users View - renders users list
 import './admin.css';
 import createButton from '../../components/button/button.js';
+import { createGenericList } from '../../components/list/list.js';
 
 function render(users, onDelete, onAdd) {
     const container = document.querySelector('#container');
     container.innerHTML = '';
-    
+
     const adminDiv = document.createElement('div');
     adminDiv.className = 'admin-container';
-    
+
     // Header
     const header = document.createElement('h1');
     header.textContent = 'Admin Panel - Users Management';
     adminDiv.appendChild(header);
-    
+
     const subtitle = document.createElement('p');
     subtitle.textContent = `Total users: ${users.length}`;
     adminDiv.appendChild(subtitle);
-    
+
     // Navigation buttons
     const nav = createNavButtons();
     adminDiv.appendChild(nav);
-    
+
     // Add User Button
     const addBtn = createButton({
         label: '+ Add New User',
@@ -30,73 +31,42 @@ function render(users, onDelete, onAdd) {
     });
     addBtn.style.marginBottom = '20px';
     adminDiv.appendChild(addBtn);
-    
-    // Users list
-    const usersList = document.createElement('div');
-    usersList.className = 'posts-list';
-    
-    if (users.length === 0) {
-        const emptyMsg = document.createElement('p');
-        emptyMsg.textContent = 'No users found.';
-        usersList.appendChild(emptyMsg);
-    } else {
-        users.forEach(user => {
-            const userCard = createUserCard(user, onDelete);
-            usersList.appendChild(userCard);
-        });
-    }
-    
-    adminDiv.appendChild(usersList);
+
+    // Users list mount using list component
+    const listMount = document.createElement('div');
+    listMount.id = 'admin-users-list-mount';
+    adminDiv.appendChild(listMount);
+
     container.appendChild(adminDiv);
+
+    const listComponent = createGenericList('admin-users-list-mount', {
+        renderItem: (u) => createUserCard(u, onDelete)
+    });
+    listComponent.updateData(Promise.resolve(users));
+    const ul = document.querySelector('#admin-users-list-mount .lc-list-group');
+    if (ul) ul.classList.add('lc-cols-3');
 }
 
 // Create a single user card
 function createUserCard(user, onDelete) {
     const card = document.createElement('div');
     card.className = 'post-card';
-    
-    // Handle name properly
-    const firstName = user.firstName || '';
-    const lastName = user.lastName || '';
-    const fullName = `${firstName} ${lastName}`.trim();
-    const displayName = fullName || user.name || user.username || 'Unknown User';
-    
-    // Get unit number
-    const unitNumber = user.unitNumber || user.unit || user.apartment || user.apartment_number || user.apartmentNumber;
-    
-    // User header - Avatar + Name (matching post-header structure)
-    const userInfo = document.createElement('div');
-    userInfo.className = 'post-header';
-    
-    // Avatar
-    const avatar = document.createElement('div');
-    avatar.className = 'user-avatar';
-    avatar.style.backgroundColor = getAvatarColor(displayName);
-    avatar.textContent = getInitials(displayName);
-    userInfo.appendChild(avatar);
-    
-    // Name container
-    const nameContainer = document.createElement('div');
-    nameContainer.className = 'name-status-container';
-    
-    // User name with unit
-    const userName = document.createElement('strong');
-    userName.className = 'post-author-name';
-    if (unitNumber) {
-        userName.textContent = `${displayName} - Apt: ${unitNumber}  `;
-    } else {
-        userName.textContent = displayName;
-    }
-    nameContainer.appendChild(userName);
-    
-    userInfo.appendChild(nameContainer);
-    card.appendChild(userInfo);
-    
-    // User details section
-    const detailsSection = document.createElement('div');
-    detailsSection.className = 'user-details-section';
-    
-    // Email
+
+    // User header
+    const userHeader = document.createElement('div');
+    userHeader.style.marginBottom = '15px';
+    userHeader.style.display = 'flex';
+    userHeader.style.justifyContent = 'space-between';
+    userHeader.style.alignItems = 'center';
+
+    const username = document.createElement('h3');
+    username.textContent = user.firstName + " " + user.lastName || user.name || 'Unknown User';
+    username.style.margin = '0';
+
+    userHeader.appendChild(username);
+    card.appendChild(userHeader);
+
+    // User details
     if (user.email) {
         const emailDiv = document.createElement('div');
         emailDiv.className = 'user-detail-item';
@@ -113,31 +83,16 @@ function createUserCard(user, onDelete) {
         emailDiv.appendChild(emailText);
         detailsSection.appendChild(emailDiv);
     }
-    
-    // Phone number
-    if (user.phone || user.phoneNumber || user.phone_number) {
-        const phoneDiv = document.createElement('div');
-        phoneDiv.className = 'user-detail-item';
-        
-        const phoneIcon = document.createElement('span');
-        phoneIcon.className = 'user-detail-icon';
-        phoneIcon.textContent = '📱';
-        
-        const phoneText = document.createElement('span');
-        phoneText.className = 'user-detail-text';
-        phoneText.textContent = user.phone || user.phoneNumber || user.phone_number;
-        
-        phoneDiv.appendChild(phoneIcon);
-        phoneDiv.appendChild(phoneText);
-        detailsSection.appendChild(phoneDiv);
+
+    if (user.apartment || user.apartment_number) {
+        const apartment = document.createElement('p');
+        apartment.style.color = '#555';
+        apartment.style.margin = '5px 0';
+        apartment.textContent = `🏠 Apartment ${user.apartment || user.apartment_number}`;
+        card.appendChild(apartment);
     }
-    
-    card.appendChild(detailsSection);
-    
-    // Delete button (matching adminView.js structure)
-    const actionsDiv = document.createElement('div');
-    actionsDiv.className = 'post-actions';
-    
+
+    // Delete button
     const deleteBtn = createButton({
         label: '🗑️ Remove User',
         className: 'lc-button',
@@ -146,10 +101,9 @@ function createUserCard(user, onDelete) {
     deleteBtn.style.backgroundColor = '#dc3545';
     deleteBtn.style.color = 'white';
     deleteBtn.style.border = 'none';
-    
-    actionsDiv.appendChild(deleteBtn);
-    card.appendChild(actionsDiv);
-    
+
+    card.appendChild(deleteBtn);
+
     return card;
 }
 
@@ -159,34 +113,44 @@ function createNavButtons() {
     nav.style.marginBottom = '20px';
     nav.style.display = 'flex';
     nav.style.gap = '10px';
-    
+
     const postsBtn = document.createElement('button');
     postsBtn.textContent = '📝 Posts';
     postsBtn.className = 'lc-button';
     postsBtn.style.padding = '10px 20px';
     postsBtn.onclick = async () => {
         const controller = await import('../../controller/adminController.js');
-        controller.init();
+        controller.initPosts({ skipLoading: true });
     };
-    
+
     const eventsBtn = document.createElement('button');
     eventsBtn.textContent = '📅 Events';
     eventsBtn.className = 'lc-button';
     eventsBtn.style.padding = '10px 20px';
     eventsBtn.onclick = async () => {
         const controller = await import('../../controller/adminController.js');
-        controller.initEvents();
+        controller.initEvents({ skipLoading: true });
     };
-    
+
+    const reportsBtn = document.createElement('button');
+    reportsBtn.textContent = '🚩 Reports';
+    reportsBtn.className = 'lc-button';
+    reportsBtn.style.padding = '10px 20px';
+    reportsBtn.onclick = async () => {
+        const controller = await import('../../controller/adminController.js');
+        controller.initReports({ skipLoading: true });
+    };
+
     const usersBtn = document.createElement('button');
     usersBtn.textContent = '👥 Users';
     usersBtn.className = 'lc-button lc-button--primary';
     usersBtn.style.padding = '10px 20px';
-    
+
     nav.appendChild(postsBtn);
     nav.appendChild(eventsBtn);
+    nav.appendChild(reportsBtn);
     nav.appendChild(usersBtn);
-    
+
     return nav;
 }
 

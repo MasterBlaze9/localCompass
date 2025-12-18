@@ -8,6 +8,17 @@
     align-items: center;
 }
 
+/* Override list grid for posts - 2 columns on desktop, 1 on mobile */
+#posts-list-mount .lc-list-group {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 768px) {
+    #posts-list-mount .lc-list-group {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Post Card - matching Event Card style */
 .post-card {
     background: #ffffff;

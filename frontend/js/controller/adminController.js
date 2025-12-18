@@ -5,24 +5,44 @@ import createAddUserModal from '../components/addUserModal/addUserModal.js';
 import postService from '../service/postService.js';
 import eventService from '../service/eventService.js';
 import userService from '../service/userService.js';
+import reportService from '../service/reportService.js';
+import adminReportsView from '../view/admin/adminReportsView.js';
 
 // Store posts data
 let posts = [];
 
-// Initialize admin panel
-export async function init() {
+// Initialize admin panel entry point (defaults to posts)
+export async function init(options = {}) {
+    return initPosts(options);
+}
+
+// Initialize reports management
+export async function initReports(options = {}) {
+    const { skipLoading = false } = options;
     try {
-        console.log('Loading admin panel...');
-
-        showLoading();
-
-        // Load posts by default
-        posts = await postService.getAllPosts();
-        console.log('Posts loaded:', posts);
-        adminView.render(posts, handleDeletePost);
-
+        console.log('Loading reports management...');
+        if (!skipLoading) showLoading('Loading reports...');
+        const reports = await reportService.getAllReports({ scope: 'building' });
+        adminReportsView.render(reports, handleDeleteReport);
     } catch (error) {
         console.error('Error loading admin panel:', error);
+        showError('Failed to load reports');
+    }
+}
+
+// Initialize posts management
+export async function initPosts(options = {}) {
+    const { skipLoading = false } = options;
+    try {
+        console.log('Loading posts management...');
+        const shouldSkipLoading = skipLoading || (posts && posts.length > 0);
+        if (!shouldSkipLoading) showLoading('Loading posts...');
+
+        posts = await postService.getAllPosts({ scope: 'building' });
+
+        adminView.render(posts, handleDeletePost);
+    } catch (error) {
+        console.error('Error loading posts:', error);
         showError('Failed to load posts');
     }
 }
@@ -36,7 +56,7 @@ async function handleDeletePost(postId) {
         await postService.deletePost(postId);
 
         // Remove from local array
-        posts = posts.filter(post => post.post_id !== postId);
+        posts = posts.filter(post => (post.id ?? post.post_id ?? post.postId) !== postId);
 
         // Re-render
         adminView.render(posts, handleDeletePost);
@@ -50,14 +70,14 @@ async function handleDeletePost(postId) {
 }
 
 // Show loading state
-function showLoading() {
+function showLoading(message = 'Loading...') {
     const container = document.querySelector('#container');
     container.innerHTML = '';
 
     const loadingDiv = document.createElement('div');
     loadingDiv.style.padding = '40px';
     loadingDiv.style.textAlign = 'center';
-    loadingDiv.innerHTML = '<h2>Loading posts...</h2>';
+    loadingDiv.innerHTML = `<h2>${message}</h2>`;
 
     container.appendChild(loadingDiv);
 }
@@ -82,11 +102,13 @@ function showError(message) {
 let events = [];
 
 // Initialize events management
-export async function initEvents() {
+export async function initEvents(options = {}) {
+    const { skipLoading = false } = options;
     try {
         console.log('Loading events management...');
 
-        showLoading();
+        const shouldSkipLoading = skipLoading || (events && events.length > 0);
+        if (!shouldSkipLoading) showLoading('Loading events...');
 
         // Fetch events from backend
         events = await eventService.getAllEvents();
@@ -102,6 +124,20 @@ export async function initEvents() {
 }
 
 // Handle delete event action
+async function handleDeleteReport(reportId) {
+    const confirmed = confirm('Delete this report?');
+    if (!confirmed) return;
+    try {
+        await reportService.deleteReport(reportId);
+        const reports = await reportService.getAllReports({ scope: 'building' });
+        adminReportsView.render(reports, handleDeleteReport);
+        alert('Report deleted!');
+    } catch (error) {
+        console.error('Error deleting report:', error);
+        alert('Failed to delete report');
+    }
+}
+
 async function handleDeleteEvent(eventId) {
     const confirmed = confirm('Delete this event?');
     if (!confirmed) return;
@@ -110,7 +146,7 @@ async function handleDeleteEvent(eventId) {
         await eventService.deleteEvent(eventId);
 
         // Remove from local array
-        events = events.filter(event => event.event_id !== eventId);
+        events = events.filter(event => (event.id ?? event.event_id ?? event.eventId) !== eventId);
 
         // Re-render
         adminEventsView.render(events, handleDeleteEvent);
@@ -140,7 +176,7 @@ function createNavigation() {
     postsBtn.className = 'lc-button';
     postsBtn.style.padding = '10px 20px';
     postsBtn.onclick = async () => {
-        await init();
+        await init({ skipLoading: true });
     };
 
     // Events button
@@ -149,11 +185,21 @@ function createNavigation() {
     eventsBtn.className = 'lc-button';
     eventsBtn.style.padding = '10px 20px';
     eventsBtn.onclick = async () => {
-        await initEvents();
+        await initEvents({ skipLoading: true });
+    };
+
+    // Reports button
+    const reportsBtn = document.createElement('button');
+    reportsBtn.textContent = '🚩 Reports';
+    reportsBtn.className = 'lc-button';
+    reportsBtn.style.padding = '10px 20px';
+    reportsBtn.onclick = async () => {
+        await init({ skipLoading: true });
     };
 
     nav.appendChild(postsBtn);
     nav.appendChild(eventsBtn);
+    nav.appendChild(reportsBtn);
 
     return nav;
 }
@@ -165,11 +211,12 @@ function createNavigation() {
 let users = [];
 
 // Initialize users management
-export async function initUsers() {
+export async function initUsers(options = {}) {
+    const { skipLoading = false } = options;
     try {
         console.log('Loading users management...');
 
-        showLoading();
+        if (!skipLoading) showLoading('Loading users...');
 
         // Fetch users from backend
         users = await userService.getAllUsers();

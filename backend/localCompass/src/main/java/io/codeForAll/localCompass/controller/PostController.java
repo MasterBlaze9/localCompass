@@ -101,8 +101,10 @@ public class PostController {
         if (!authUser.isAdmin() && !post.getUser().getId().equals(authUser.getId())) {
             throw new RuntimeException("Forbidden");
         }
+        // Remove acceptances to satisfy FK constraints
+        postAcceptanceRepository.findByPostId(id).forEach(postAcceptanceRepository::delete);
         postRepository.delete(post);
-        return ResponseEntity.ok(mapToResponseDTO(post));
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{postId}/acceptances")
@@ -123,6 +125,22 @@ public class PostController {
         return ResponseEntity.ok(new PostAcceptanceDTO(saved));
     }
 
+    @PatchMapping("/{postId}/acceptances/{userId}")
+    public ResponseEntity<PostAcceptanceDTO> updateAcceptance(@PathVariable Long postId,
+                                                              @PathVariable Long userId,
+                                                              @RequestParam(required = false) RsvpStatus status) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        User authUser = getCurrentUser();
+        if (!authUser.isAdmin() && !authUser.getId().equals(userId)) {
+            throw new RuntimeException("Forbidden");
+        }
+        PostAcceptance acceptance = postAcceptanceRepository.findByPostIdAndUserId(postId, userId)
+                .orElseThrow(() -> new RuntimeException("Acceptance not found"));
+        acceptance.setStatus(status != null ? status : RsvpStatus.PENDING);
+        PostAcceptance updated = postAcceptanceRepository.save(acceptance);
+        return ResponseEntity.ok(new PostAcceptanceDTO(updated));
+    }
+
     @GetMapping("/{postId}/acceptances")
     public ResponseEntity<List<PostAcceptanceDTO>> listAcceptances(@PathVariable Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
@@ -133,6 +151,30 @@ public class PostController {
         List<PostAcceptanceDTO> response = postAcceptanceRepository.findByPostId(postId)
                 .stream().map(PostAcceptanceDTO::new).collect(Collectors.toList());
         return ResponseEntity.ok(response);
+    }
+
+    // Remove my acceptance
+    @DeleteMapping("/{postId}/acceptances")
+    public ResponseEntity<Void> removeMyAcceptance(@PathVariable Long postId) {
+        User authUser = getCurrentUser();
+        PostAcceptance acceptance = postAcceptanceRepository.findByPostIdAndUserId(postId, authUser.getId())
+                .orElseThrow(() -> new RuntimeException("Acceptance not found"));
+        postAcceptanceRepository.delete(acceptance);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Admin remove a user's acceptance
+    @DeleteMapping("/{postId}/acceptances/{userId}")
+    public ResponseEntity<Void> removeAcceptance(@PathVariable Long postId, @PathVariable Long userId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        User authUser = getCurrentUser();
+        if (!authUser.isAdmin() && !post.getUser().getId().equals(authUser.getId())) {
+            throw new RuntimeException("Forbidden");
+        }
+        PostAcceptance acceptance = postAcceptanceRepository.findByPostIdAndUserId(postId, userId)
+                .orElseThrow(() -> new RuntimeException("Acceptance not found"));
+        postAcceptanceRepository.delete(acceptance);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
@@ -192,6 +234,16 @@ public class PostController {
         dto.setCreatedAt(post.getCreatedAt());
         dto.setAuthorName(post.getUser().getFirstName() + " " + post.getUser().getLastName());
         dto.setAuthorUnit(post.getUser().getUnitNumber());
+        dto.setAuthorId(post.getUser().getId());
+        dto.setBuildingName(post.getBuilding().getName());
+        dto.setAcceptancesCount(postAcceptanceRepository.findByPostId(post.getId()).size());
+        try {
+            User me = getCurrentUser();
+            if (me != null) {
+                boolean accepted = postAcceptanceRepository.findByPostIdAndUserId(post.getId(), me.getId()).isPresent();
+                dto.setAcceptedByMe(accepted);
+            }
+        } catch (Exception ignored) { /* no-op */ }
         return dto;
     }
 }

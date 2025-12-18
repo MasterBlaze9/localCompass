@@ -37,6 +37,15 @@ const eventService = {
         return this.handleResponse(response);
     },
 
+    async updateEvent(id, payload) {
+        const response = await fetch(`${BASE_URL}/events/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() },
+            body: JSON.stringify(payload)
+        });
+        return this.handleResponse(response);
+    },
+
   async joinEvent(eventId) {
     
     const response = await fetch(`${BASE_URL}/events/${eventId}/attendees`, {
@@ -77,6 +86,16 @@ const eventService = {
             console.error('Error deleting event:', error);
             throw error;
         }
+    },
+
+    async removeAttendance(eventId, userId) {
+        const url = userId ? `${BASE_URL}/events/${eventId}/attendees/${userId}` : `${BASE_URL}/events/${eventId}/attendees`;
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+        });
+        if (response.status === 204) return true;
+        return this.handleResponse(response);
     },
 
     // Common response handler

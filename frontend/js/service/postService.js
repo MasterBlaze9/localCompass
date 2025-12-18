@@ -74,11 +74,24 @@ const postService = {
         headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return await response.json();
+      // Some backends may return 204 No Content; handle gracefully
+      if (response.status === 204) return true;
+      try { return await response.json(); } catch { return true; }
     } catch (error) {
       console.error('Error deleting post:', error);
       throw error;
     }
+  },
+
+  async removeAcceptance(postId, userId) {
+    const url = userId ? `${BASE_URL}/posts/${postId}/acceptances/${userId}` : `${BASE_URL}/posts/${postId}/acceptances`;
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+    });
+    if (response.status === 204) return true;
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return response.json();
   },
 }
 

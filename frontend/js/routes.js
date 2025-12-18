@@ -11,6 +11,10 @@ export default {
     path: '/posts',
     controller: 'postController'
   },
+  reports: {
+    path: '/reports',
+    controller: 'reportController'
+  },
   admin: {
     path: '/admin',
     controller: 'adminController'
@@ -23,6 +27,7 @@ export default {
     path: '/login',
     controller: 'loginController'
   },
+
   currentPath: {
     path: '',
     controller: ''

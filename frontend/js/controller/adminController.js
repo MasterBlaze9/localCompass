@@ -21,7 +21,6 @@ export async function initReports(options = {}) {
   const { skipLoading = false } = options;
   try {
     console.log('Loading reports management...');
-    if (!skipLoading) showLoading('Loading reports...');
 
     // Get building ID to ensure we fetch reports for the correct scope
     const me = await userService.getMe();
@@ -44,7 +43,6 @@ export async function initPosts(options = {}) {
   try {
     console.log('Loading posts management...');
     const shouldSkipLoading = skipLoading || (posts && posts.length > 0);
-    if (!shouldSkipLoading) showLoading('Loading posts...');
 
     // Get building ID to ensure we fetch posts for the correct scope
     const me = await userService.getMe();
@@ -122,7 +120,6 @@ export async function initEvents(options = {}) {
 
     const shouldSkipLoading = skipLoading || (events && events.length > 0);
     if (!shouldSkipLoading) showLoading('Loading events...');
-
     // Get building ID to ensure we fetch events for the correct scope
     const me = await userService.getMe();
     const buildingId = me?.buildingId;
@@ -235,8 +232,6 @@ export async function initUsers(options = {}) {
   const { skipLoading = false } = options;
   try {
     console.log('Loading users management...');
-
-    if (!skipLoading) showLoading('Loading users...');
 
     // Get building ID to ensure we fetch users for the correct scope
     const me = await userService.getMe();

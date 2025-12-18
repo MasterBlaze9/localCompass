@@ -18,7 +18,7 @@
   letter-spacing: -0.02em;
 }
 
-.admin-container > p {
+.admin-container>p {
   color: #64748b;
   font-size: 15px;
   margin-bottom: 24px;
@@ -208,40 +208,7 @@
    BADGES
    =================================== */
 
-.status-badge {
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-
-.status-open {
-  background-color: #10b981;
-  color: white;
-}
-
-.status-in-progress {
-  background-color: #f59e0b;
-  color: white;
-}
-
-.status-closed {
-  background-color: #ef4444;
-  color: white;
-}
-
-.category-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 12px;
-  text-transform: capitalize;
-}
+/* Use .lc-badge and variants from shared.css */
 
 .category-mutual-aid {
   background-color: #3b82f6;
@@ -436,6 +403,7 @@
    =================================== */
 
 @media (max-width: 768px) {
+
   #admin-events-list-mount .lc-list-group,
   #admin-posts-list-mount .lc-list-group,
   #admin-reports-list-mount .lc-list-group,

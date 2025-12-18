@@ -28,26 +28,37 @@ export async function init() {
       }
     },
     onCreate: () => {
-      if (!me?.id) { alert('Login required'); return; }
-      const form = document.createElement('div');
-      const t = document.createElement('input'); t.placeholder = 'Title'; t.className = 'modal-input';
-      const d = document.createElement('textarea'); d.placeholder = 'Description'; d.rows = 3; d.className = 'modal-input';
-      form.append(t, d);
-      openModal({
-        title: 'Create Report',
-        content: form,
-        actions: [
-          { label: 'Cancel', className: 'lc-button', onClick: (_e, { close }) => close() },
-          {
-            label: 'Create', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
-              if (!t.value.trim()) { alert('Title required'); return; }
-              await reportService.createReport({ title: t.value.trim(), description: d.value.trim(), userId: me.id, buildingId: me.buildingId });
-              close();
-              const data = await reportService.getAllReports({ scope: currentScope });
-              reportView.render(data, me, handlers, currentScope);
+      import('../components/error/errorDisplay.js').then(({ showError }) => {
+        if (!me?.id) {
+          showError(document.getElementById('container'), 'You must be logged in to create a report.');
+          return;
+        }
+        const form = document.createElement('div');
+        const t = document.createElement('input'); t.placeholder = 'Title'; t.className = 'modal-input';
+        const d = document.createElement('textarea'); d.placeholder = 'Description'; d.rows = 3; d.className = 'modal-input';
+        form.append(t, d);
+        openModal({
+          title: 'Create Report',
+          content: form,
+          actions: [
+            { label: 'Cancel', className: 'lc-button', onClick: (_e, { close }) => close() },
+            {
+              label: 'Create', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
+                if (!t.value.trim()) {
+                  showError(form, 'Title is required.');
+                  return;
+                }
+                await reportService.createReport({ title: t.value.trim(), description: d.value.trim(), userId: me.id, buildingId: me.buildingId });
+                import('../components/error/errorDisplay.js').then(({ showSuccess }) => {
+                  showSuccess(document.getElementById('container'), 'Report created successfully!');
+                });
+                close();
+                const data = await reportService.getAllReports({ scope: currentScope });
+                reportView.render(data, me, handlers, currentScope);
+              }
             }
-          }
-        ]
+          ]
+        });
       });
     },
     onRefresh: async () => {
@@ -59,7 +70,13 @@ export async function init() {
       }
     },
     onEdit: async (id, data) => { await reportService.updateReport(id, data); await handlers.onRefresh(); },
-    onDelete: async (id) => { await reportService.deleteReport(id); await handlers.onRefresh(); }
+    onDelete: async (id) => {
+      await reportService.deleteReport(id);
+      import('../components/error/errorDisplay.js').then(({ showSuccess }) => {
+        showSuccess(document.getElementById('container'), 'Report deleted successfully!');
+      });
+      await handlers.onRefresh();
+    }
   };
   reportView.render(items, me, handlers, currentScope);
 }

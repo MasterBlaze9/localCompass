@@ -1,5 +1,7 @@
+
 import { createGenericList } from '../../components/list/list.js';
 import '../post/post.css';
+import { createCard } from '../../components/card/card.js';
 
 function render(items = [], me, handlers = {}, scope = 'mine') {
   const container = document.getElementById('container');
@@ -52,41 +54,8 @@ function render(items = [], me, handlers = {}, scope = 'mine') {
 }
 
 function createReportCard(r, me, handlers = {}, scope) {
-  const card = document.createElement('li');
-  card.className = 'lc-card report-card';
-
-  const header = document.createElement('header');
-  header.className = 'report-card-header';
-  const title = document.createElement('h3');
-  title.textContent = r.title || `Report #${r.id}`;
-  header.appendChild(title);
-
-  const body = document.createElement('div');
-  body.className = 'lc-card-body';
-  if (r.description) {
-    const p = document.createElement('p');
-    p.textContent = r.description;
-    body.appendChild(p);
-  }
-
-  const status = document.createElement('span');
-  status.className = 'post-status'; // reuse badge style
-  status.textContent = r.status || 'OPEN';
-  body.appendChild(status);
-
-  const metaSmall = document.createElement('small');
-  metaSmall.textContent = r.createdAt ? new Date(r.createdAt).toLocaleString() : '';
-  body.appendChild(metaSmall);
-
-  const footer = document.createElement('footer');
-  footer.style.display = 'flex';
-  footer.style.gap = '8px';
-  footer.style.marginTop = 'auto';
-  footer.style.alignItems = 'stretch';
-  footer.style.width = '100%';
-  footer.style.flexWrap = 'nowrap';
-
   const isOwner = me && (r.userId ? r.userId === me.id : (r.user?.id === me.id));
+  let footer = null;
   if (isOwner && (scope === 'mine' || scope === undefined)) {
     const editBtn = document.createElement('button');
     editBtn.className = 'lc-button lc-button--primary';
@@ -97,8 +66,8 @@ function createReportCard(r, me, handlers = {}, scope) {
     editBtn.style.whiteSpace = 'nowrap';
     editBtn.addEventListener('click', () => {
       const form = document.createElement('div');
-      const tInput = document.createElement('input'); tInput.className = 'modal-input'; tInput.placeholder = 'Title'; tInput.value = title.textContent || '';
-      const dInput = document.createElement('textarea'); dInput.className = 'modal-input'; dInput.rows = 3; dInput.placeholder = 'Description'; dInput.value = r.description || '';
+      const tInput = document.createElement('input'); tInput.className = 'lc-input'; tInput.placeholder = 'Title'; tInput.value = r.title || '';
+      const dInput = document.createElement('textarea'); dInput.className = 'lc-input'; dInput.rows = 3; dInput.placeholder = 'Description'; dInput.value = r.description || '';
       form.append(tInput, dInput);
       import('../../components/modal/modal.js').then(({ default: openModal }) => {
         openModal({
@@ -108,7 +77,12 @@ function createReportCard(r, me, handlers = {}, scope) {
             { label: 'Cancel', className: 'lc-button lc-button--secondary' },
             {
               label: 'Save', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
-                if (!tInput.value.trim()) { alert('Title required'); return; }
+                if (!tInput.value.trim()) {
+                  import('../../components/error/errorDisplay.js').then(({ showError }) => {
+                    showError(form, 'Title is required.');
+                  });
+                  return;
+                }
                 await handlers?.onEdit?.(r.id, { title: tInput.value.trim(), description: dInput.value });
                 close();
               }
@@ -116,9 +90,10 @@ function createReportCard(r, me, handlers = {}, scope) {
           ]
         });
       });
-    });
-    footer.appendChild(editBtn);
 
+    });
+    footer = document.createElement('div');
+    footer.appendChild(editBtn);
     const del = document.createElement('button');
     del.className = 'lc-button lc-button--danger';
     del.textContent = 'Delete';
@@ -131,9 +106,16 @@ function createReportCard(r, me, handlers = {}, scope) {
     del.style.whiteSpace = 'nowrap';
     footer.appendChild(del);
   }
-
-  card.append(header, body, footer);
-  return card;
+  return createCard({
+    type: 'report',
+    data: {
+      title: r.title,
+      description: r.description,
+      status: r.status || 'OPEN',
+      createdAt: r.createdAt
+    },
+    options: { footer }
+  });
 }
 
 export default { render };

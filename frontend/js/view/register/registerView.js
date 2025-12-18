@@ -215,13 +215,7 @@ function render() {
     fontWeight: '500'
   });
 
-  // Add hover effect
-  submitBtn.addEventListener('mouseenter', () => {
-    submitBtn.style.background = '#2850e8';
-  });
-  submitBtn.addEventListener('mouseleave', () => {
-    submitBtn.style.background = '#3861fb';
-  });
+  // Use CSS :hover for button hover effect
 
   // Create footer
   const footer = document.createElement('div');
@@ -243,13 +237,7 @@ function render() {
     textDecoration: 'none'
   });
 
-  // Add hover effect to link
-  loginLink.addEventListener('mouseenter', () => {
-    loginLink.style.textDecoration = 'underline';
-  });
-  loginLink.addEventListener('mouseleave', () => {
-    loginLink.style.textDecoration = 'none';
-  });
+  // Use CSS :hover for link hover effect
 
   // Assemble elements
   footer.appendChild(footerText);

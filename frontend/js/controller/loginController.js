@@ -99,15 +99,9 @@ export function init() {
       .catch((err) => {
         // Clear stored auth token
         auth.clearAuth();
-        // Normalize network/fetch errors to a friendly message for users
-        // Browsers often surface network failures as 'Failed to fetch' (TypeError)
+        // Always show a clear, user-friendly message for login errors
         console.error('Login error:', err);
-        let message = err?.message || 'Login failed';
-        if (message === 'Failed to fetch') {
-          // Most commonly this appears when the server rejects the request (CORS/preflight) or credentials are wrong
-          message = 'Invalid credentials';
-        }
-        show(globalErr, message);
+        show(globalErr, 'Incorrect email/phone or password. Please try again.');
       });
   });
 }

@@ -3,7 +3,7 @@ import createButton from "../../components/button/button.js";
 
 function render(data) {
     const { reports = [], posts = [], events = [] } = data;
-    
+
     const container = document.querySelector('#container');
     container.innerHTML = '';
 
@@ -258,17 +258,33 @@ function createEventCard(event) {
     card.className = 'event-card';
     card.onclick = () => window.location.href = '/events';
 
-    // Organizer
+    // Event Header (with Avatar)
+    const header = document.createElement('div');
+    header.className = 'post-header';
+
+    const organizerName = event.creatorName || event.organizerName || event.organizer || 'Anonymous';
+    
+    const avatar = document.createElement('div');
+    avatar.className = 'user-avatar';
+    avatar.style.backgroundColor = getAvatarColor(organizerName);
+    avatar.textContent = getInitials(organizerName);
+    header.appendChild(avatar);
+
+    const nameContainer = document.createElement('div');
+    nameContainer.className = 'name-status-container';
+
     const organizer = document.createElement('strong');
     organizer.className = 'post-author-name';
-    organizer.textContent = event.organizer || event.organizerName || 'Anonymous';
-    card.appendChild(organizer);
+    organizer.textContent = organizerName;
+    nameContainer.appendChild(organizer);
 
     const eventDate = document.createElement('span');
-    eventDate.className = 'post-author-unit';
-    eventDate.style.marginLeft = '10px';
+    eventDate.className = 'post-time';
     eventDate.textContent = formatDate(event.datetime || event.date || event.event_date);
-    card.appendChild(eventDate);
+    nameContainer.appendChild(eventDate);
+
+    header.appendChild(nameContainer);
+    card.appendChild(header);
 
     // Title
     const title = document.createElement('h3');

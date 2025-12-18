@@ -1,0 +1,118 @@
+/* Shared styles for cards, badges, buttons, errors, and inputs */
+
+.lc-card {
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+	padding: 24px;
+	margin-bottom: 24px;
+	font-family: 'Inter', Arial, sans-serif;
+	list-style: none;
+}
+
+.lc-badge {
+	display: inline-block;
+	padding: 4px 12px;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+	color: #fff;
+	margin-bottom: 8px;
+}
+
+.lc-badge.status-open {
+	background-color: #10b981;
+}
+
+.lc-badge.status-in-progress {
+	background-color: #f59e0b;
+}
+
+.lc-badge.status-closed {
+	background-color: #ef4444;
+}
+
+.lc-badge.category-mutual-aid {
+	background-color: #3b82f6;
+}
+
+.lc-badge.category-social {
+	background-color: #a855f7;
+}
+
+.lc-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 0.5rem 0.9rem;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background: #fff;
+	color: #222;
+	font: inherit;
+	cursor: pointer;
+	transition: background 120ms ease, border-color 120ms ease;
+}
+
+.lc-button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.lc-button--primary {
+	background: #3861fb;
+	color: #fff;
+	border-color: #3861fb;
+}
+
+.register-btn:hover {
+	background: #2850e8 !important;
+}
+
+#toLogin:hover {
+	text-decoration: underline !important;
+}
+
+
+.lc-error {
+	display: none;
+	background: #fde8e8;
+	color: #b91c1c;
+	border: 1px solid #fecaca;
+	padding: 12px 16px;
+	border-radius: 8px;
+	margin-bottom: 18px;
+	font-size: 15px;
+	font-weight: 500;
+	box-shadow: 0 2px 8px rgba(239, 68, 68, 0.08);
+	transition: opacity 0.3s;
+	z-index: 100;
+}
+
+.lc-success {
+	display: none;
+	background: #e6fbe8;
+	color: #15803d;
+	border: 1px solid #bbf7d0;
+	padding: 12px 16px;
+	border-radius: 8px;
+	margin-bottom: 18px;
+	font-size: 15px;
+	font-weight: 500;
+	box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+	transition: opacity 0.3s;
+	z-index: 100;
+}
+
+.lc-input {
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: 8px;
+	border: 1px solid #dcdfe4;
+	margin-bottom: 6px;
+	box-sizing: border-box;
+	font-size: 14px;
+}

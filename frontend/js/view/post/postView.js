@@ -34,45 +34,57 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
   tabs.append(mkTab('My posts', 'mine'), mkTab('Accepted', 'accepted'), mkTab('Available', 'available'));
   container.appendChild(tabs);
 
-  const createBtn = createButton({
-    label: 'New Post',
-    className: 'lc-button lc-button--primary',
-    onClick: () => {
-      if (!currentUser?.id) { alert('Login required'); return; }
-      const form = document.createElement('div');
-      const postTitleInput = document.createElement('input');
-      postTitleInput.placeholder = "What's this about?";
-      postTitleInput.className = 'modal-input';
-      const descInput = document.createElement('textarea');
-      descInput.placeholder = "Provide more details...";
-      descInput.rows = 3;
-      descInput.className = 'modal-input';
-      form.append(postTitleInput, descInput);
+  // Import showError for user-friendly feedback
+  import('../../components/error/errorDisplay.js').then(({ showError }) => {
+    const createBtn = createButton({
+      label: 'New Post',
+      className: 'lc-button lc-button--primary',
+      onClick: () => {
+        if (!currentUser?.id) {
+          showError(container, 'You must be logged in to create a post.');
+          return;
+        }
+        const form = document.createElement('div');
+        const postTitleInput = document.createElement('input');
+        postTitleInput.placeholder = "What's this about?";
+        postTitleInput.className = 'modal-input';
+        const descInput = document.createElement('textarea');
+        descInput.placeholder = "Provide more details...";
+        descInput.rows = 3;
+        descInput.className = 'modal-input';
+        form.append(postTitleInput, descInput);
 
-      openModal({
-        title: 'Create a Post',
-        content: form,
-        actions: [
-          { label: 'Cancel', className: 'lc-button lc-button--secondary' },
-          {
-            label: 'Post to Community', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
-              if (!postTitleInput.value.trim()) { alert('Please add a title before posting.'); return; }
-              const postData = { title: postTitleInput.value, content: descInput.value, userId: currentUser?.id, buildingId: currentUser?.buildingId };
-              try {
-                await postService.createPost(postData);
-                close();
-                handlers?.onFilter?.(currentScope);
-              } catch (err) {
-                alert('Failed to create post.');
+        openModal({
+          title: 'Create a Post',
+          content: form,
+          actions: [
+            { label: 'Cancel', className: 'lc-button lc-button--secondary' },
+            {
+              label: 'Post to Community', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
+                if (!postTitleInput.value.trim()) {
+                  showError(form, 'Please add a title before posting.');
+                  return;
+                }
+                const postData = { title: postTitleInput.value, content: descInput.value, userId: currentUser?.id, buildingId: currentUser?.buildingId };
+                try {
+                  await postService.createPost(postData);
+                  import('../../components/error/errorDisplay.js').then(({ showSuccess }) => {
+                    showSuccess(container, 'Post created successfully!');
+                  });
+                  close();
+                  handlers?.onFilter?.(currentScope);
+                } catch (err) {
+                  showError(form, 'Failed to create post.');
+                }
               }
             }
-          }
-        ]
-      });
-    }
+          ]
+        });
+      }
+    });
+      createBtn.style.width = '100%';
+      container.appendChild(createBtn);
   });
-  createBtn.style.width = '100%';
-  container.appendChild(createBtn);
 
   // Create list mount point
   const listMount = document.createElement('div');
@@ -227,7 +239,12 @@ function createPostCard(post, currentUser = null, handlers = {}) {
             { label: 'Cancel', className: 'lc-button lc-button--secondary' },
             {
               label: 'Save', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
-                if (!titleInput.value.trim()) { alert('Title required'); return; }
+                if (!titleInput.value.trim()) {
+                  import('../../components/error/errorDisplay.js').then(({ showError }) => {
+                    showError(form, 'Title is required.');
+                  });
+                  return;
+                }
                 await handlers?.onEdit?.(post.id, { title: titleInput.value.trim(), content: descInput.value });
                 close();
               }
@@ -253,8 +270,13 @@ function createPostCard(post, currentUser = null, handlers = {}) {
         try {
           deleteBtn.disabled = true;
           await handlers?.onDelete?.(post.id);
+          import('../../components/error/errorDisplay.js').then(({ showSuccess }) => {
+            showSuccess(container, 'Post deleted successfully!');
+          });
         } catch (err) {
-          alert('Failed to delete post.');
+          import('../../components/error/errorDisplay.js').then(({ showError }) => {
+            showError(container, 'Failed to delete post.');
+          });
           deleteBtn.disabled = false;
         }
       }

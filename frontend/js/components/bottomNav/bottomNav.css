@@ -1,0 +1,84 @@
+.bottom-nav {
+	display: none;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: #ffffff;
+	box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+	padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+	border-top: 1px solid #e0e0e0;
+}
+
+.bottom-nav-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+	padding: 8px 4px;
+	text-decoration: none;
+	color: #757575;
+	transition: color 0.3s ease;
+	min-width: 60px;
+}
+
+.bottom-nav-item:hover {
+	color: #1976d2;
+	text-decoration: none;
+}
+
+.bottom-nav-item.active {
+	color: #1976d2;
+}
+
+.bottom-nav-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 4px;
+}
+
+.bottom-nav-icon svg {
+	width: 24px;
+	height: 24px;
+}
+
+.bottom-nav-label {
+	font-size: 12px;
+	font-weight: 500;
+	text-align: center;
+	white-space: nowrap;
+}
+
+/* Show bottom nav on mobile, hide navbar */
+@media (max-width: 768px) {
+	.bottom-nav {
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+	}
+
+	/* Hide regular navbar on mobile */
+	#anchors.navbar {
+		display: none !important;
+	}
+
+	/* Add padding to body to account for fixed bottom nav */
+	body {
+		padding-bottom: 65px;
+	}
+
+	/* Ensure main content doesn't overlap with bottom nav */
+	#container {
+		padding-bottom: 80px;
+	}
+}
+
+/* Hide bottom nav on desktop */
+@media (min-width: 769px) {
+	.bottom-nav {
+		display: none !important;
+	}
+}

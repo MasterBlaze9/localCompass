@@ -178,7 +178,7 @@ function createPostCard(post, currentUser = null, handlers = {}) {
     buttonRow.style.display = 'flex';
     buttonRow.style.gap = '8px';
     buttonRow.style.alignItems = 'stretch';
-    
+
     const viewBtn = createButton({
       label: 'View acceptances',
       className: 'lc-button',

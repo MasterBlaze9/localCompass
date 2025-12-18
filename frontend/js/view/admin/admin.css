@@ -392,9 +392,9 @@
   width: 100%;
 }
 
-/* Users get 3 columns */
+/* Users get 2 columns */
 #admin-users-list-mount .lc-list-group {
-  grid-template-columns: repeat(3, 1fr) !important;
+  grid-template-columns: repeat(2, 1fr) !important;
 }
 
 /* ===================================

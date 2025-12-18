@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -90,16 +91,34 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO dto) {
+    public ResponseEntity<?> createUser(@RequestBody CreateUserDTO dto) {
         if ((dto.getEmail() == null || dto.getEmail().isBlank()) && (dto.getPhoneNumber() == null || dto.getPhoneNumber().isBlank())) {
             throw new RuntimeException("Email or phone number is required");
         }
+
+        // Check duplicates explicitly and return a structured 409 so frontend can map the correct field
+        if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
+            String email = dto.getEmail().trim();
+            if (userRepository.findByEmail(email).isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(Map.of("message", "This email is already registered", "field", "email", "code", "DUPLICATE_EMAIL"));
+            }
+        }
+
+        if (dto.getPhoneNumber() != null && !dto.getPhoneNumber().isBlank()) {
+            String phone = dto.getPhoneNumber().trim();
+            if (userRepository.findByPhoneNumber(phone).isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(Map.of("message", "This phone number is already registered", "field", "phoneNumber", "code", "DUPLICATE_PHONE"));
+            }
+        }
+
         User user = new User();
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail());
+        user.setEmail(dto.getEmail() == null ? null : dto.getEmail().trim());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setPhoneNumber(dto.getPhoneNumber() == null ? null : dto.getPhoneNumber().trim());
         User savedUser = userRepository.save(user);
         return ResponseEntity.ok(new UserDTO(savedUser));
     }

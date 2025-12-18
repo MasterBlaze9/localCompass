@@ -53,6 +53,7 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .post-card:hover {

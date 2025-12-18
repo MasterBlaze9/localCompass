@@ -55,7 +55,9 @@ public class EventController {
         event.setBuilding(building);
 
         Event saved = eventRepository.save(event);
-        return ResponseEntity.ok(new EventResponseDTO(saved));
+        EventResponseDTO respDto = new EventResponseDTO(saved);
+        respDto.setAttendeesCount(eventAttendeeRepository.findByEventId(saved.getId()).size());
+        return ResponseEntity.ok(respDto);
     }
 
     // Update Event (creator or admin only)
@@ -75,7 +77,9 @@ public class EventController {
         if (dto.getStatus() != null) event.setStatus(dto.getStatus());
 
         Event updated = eventRepository.save(event);
-        return ResponseEntity.ok(new EventResponseDTO(updated));
+        EventResponseDTO respDto = new EventResponseDTO(updated);
+        respDto.setAttendeesCount(eventAttendeeRepository.findByEventId(updated.getId()).size());
+        return ResponseEntity.ok(respDto);
     }
 
     // Delete Event (creator or admin only)
@@ -88,7 +92,9 @@ public class EventController {
             throw new RuntimeException("Forbidden");
         }
         eventRepository.delete(event);
-        return ResponseEntity.ok(new EventResponseDTO(event));
+        EventResponseDTO dto = new EventResponseDTO(event);
+        dto.setAttendeesCount(eventAttendeeRepository.findByEventId(event.getId()).size());
+        return ResponseEntity.ok(dto);
     }
 
     // Join Event (self or admin)
@@ -117,7 +123,47 @@ public class EventController {
 
     @PatchMapping("/{eventId}/attendees/{userId}")
     public ResponseEntity<EventAttendeeDTO> updateAttendance(@PathVariable Long eventId,
-                                                             @PathVariable Long userId) {
+                                                             @PathVariable Long userId,
+                                                             @RequestParam(required = false) RsvpStatus status) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        User authUser = getCurrentUser();
+        if (!authUser.isAdmin() && !event.getCreator().getId().equals(authUser.getId()) && !authUser.getId().equals(userId)) {
+            throw new RuntimeException("Forbidden");
+        }
+        EventAttendee attendee = eventAttendeeRepository.findByEventIdAndUserId(eventId, userId)
+                .orElseThrow(() -> new RuntimeException("Attendee not found"));
+
+        attendee.setRsvpStatus(status != null ? status : RsvpStatus.PRESENT);
+        EventAttendee updated = eventAttendeeRepository.save(attendee);
+        return ResponseEntity.ok(new EventAttendeeDTO(updated));
+    }
+
+    // Self-update attendance
+    @PatchMapping("/{eventId}/attendees")
+    public ResponseEntity<EventAttendeeDTO> updateMyAttendance(@PathVariable Long eventId,
+                                                               @RequestParam(required = false) RsvpStatus status) {
+        User authUser = getCurrentUser();
+        EventAttendee attendee = eventAttendeeRepository.findByEventIdAndUserId(eventId, authUser.getId())
+                .orElseThrow(() -> new RuntimeException("Attendee not found"));
+        attendee.setRsvpStatus(status != null ? status : RsvpStatus.PRESENT);
+        EventAttendee updated = eventAttendeeRepository.save(attendee);
+        return ResponseEntity.ok(new EventAttendeeDTO(updated));
+    }
+
+    // Remove my attendance
+    @DeleteMapping("/{eventId}/attendees")
+    public ResponseEntity<Void> removeMyAttendance(@PathVariable Long eventId) {
+        User authUser = getCurrentUser();
+        EventAttendee attendee = eventAttendeeRepository.findByEventIdAndUserId(eventId, authUser.getId())
+                .orElseThrow(() -> new RuntimeException("Attendee not found"));
+        eventAttendeeRepository.delete(attendee);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Admin remove a user's attendance
+    @DeleteMapping("/{eventId}/attendees/{userId}")
+    public ResponseEntity<Void> removeAttendance(@PathVariable Long eventId, @PathVariable Long userId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
         User authUser = getCurrentUser();
@@ -126,10 +172,8 @@ public class EventController {
         }
         EventAttendee attendee = eventAttendeeRepository.findByEventIdAndUserId(eventId, userId)
                 .orElseThrow(() -> new RuntimeException("Attendee not found"));
-
-        attendee.setRsvpStatus(RsvpStatus.PRESENT);
-        EventAttendee updated = eventAttendeeRepository.save(attendee);
-        return ResponseEntity.ok(new EventAttendeeDTO(updated));
+        eventAttendeeRepository.delete(attendee);
+        return ResponseEntity.noContent().build();
     }
 
     // List Attendees (creator or admin)
@@ -188,7 +232,11 @@ public class EventController {
         }
 
         List<EventResponseDTO> response = events.stream()
-                .map(EventResponseDTO::new)
+                .map(e -> {
+                    EventResponseDTO dto = new EventResponseDTO(e);
+                    dto.setAttendeesCount(eventAttendeeRepository.findByEventId(e.getId()).size());
+                    return dto;
+                })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(response);
     }

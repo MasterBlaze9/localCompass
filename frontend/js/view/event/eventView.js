@@ -230,21 +230,36 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
 
   if (!isCreator) {
     const attendBtn = document.createElement('button');
-    attendBtn.textContent = isAttending ? 'Attending' : 'Attend';
+    attendBtn.textContent = (isAttending && currentScope === 'attending') ? 'Unattend' : (isAttending ? 'Attending' : 'Attend');
     attendBtn.className = `lc-button${isAttending ? ' lc-button--primary' : ''}`;
     attendBtn.style.flex = '1';
     attendBtn.style.minWidth = '0';
     attendBtn.style.padding = '10px 12px';
     attendBtn.style.whiteSpace = 'nowrap';
-    attendBtn.disabled = isAttending;
+    if (isAttending && currentScope === 'attending') {
+      attendBtn.style.backgroundColor = '#dc3545';
+      attendBtn.style.color = '#fff';
+    }
+    attendBtn.disabled = isAttending && currentScope !== 'attending';
     attendBtn.addEventListener('click', async () => {
       if (!isAttending) {
         await handlers?.onAttend?.(eventId, (success) => {
           if (success) {
-            attendBtn.textContent = 'Attending';
-            attendBtn.disabled = true;
+            attendBtn.textContent = currentScope === 'attending' ? 'Unattend' : 'Attending';
+            attendBtn.className = 'lc-button lc-button--primary';
+            if (currentScope === 'attending') {
+              attendBtn.style.backgroundColor = '#dc3545';
+              attendBtn.style.color = '#fff';
+            } else {
+              attendBtn.style.backgroundColor = '';
+              attendBtn.style.color = '';
+              attendBtn.disabled = true;
+            }
           }
         });
+      } else if (currentScope === 'attending') {
+        // Unattend when viewing Attending filter
+        await handlers?.onUnattend?.(eventId);
       }
     });
     footer.appendChild(attendBtn);

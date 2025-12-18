@@ -201,7 +201,13 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
       dtInput.className = 'modal-input';
       dtInput.value = formatDateTimeLocal(ev.datetime);
 
-      form.append(titleInput, descInput, locInput, dtInput);
+      const dtError = document.createElement('div');
+      dtError.style.color = 'red';
+      dtError.style.fontSize = '12px';
+      dtError.style.marginTop = '4px';
+      dtError.style.display = 'none';
+
+      form.append(titleInput, descInput, locInput, dtInput, dtError);
 
       openModal({
         title: 'Edit Event',
@@ -216,6 +222,24 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
                 alert('Title required');
                 return;
               }
+              // Validate that event datetime is not in the past
+              if (dtInput.value) {
+                const eventDateTime = new Date(dtInput.value);
+                const now = new Date();
+                if (eventDateTime < now) {
+                  dtInput.style.borderColor = 'red';
+                  dtInput.style.backgroundColor = '#ffe6e6';
+                  dtError.textContent = 'Event date cannot be in the past';
+                  dtError.style.display = 'block';
+                  return;
+                }
+              }
+
+              // Reset styling if valid
+              dtInput.style.borderColor = '';
+              dtInput.style.backgroundColor = '';
+              dtError.style.display = 'none';
+
               await handlers?.onEdit?.(eventId, {
                 title: titleInput.value.trim(),
                 description: descInput.value,
@@ -229,6 +253,22 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
       });
     });
     footer.appendChild(editBtn);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.className = 'lc-button';
+    deleteBtn.style.flex = '1';
+    deleteBtn.style.minWidth = '0';
+    deleteBtn.style.padding = '10px 12px';
+    deleteBtn.style.whiteSpace = 'nowrap';
+    deleteBtn.style.backgroundColor = '#dc3545';
+    deleteBtn.style.color = '#fff';
+    deleteBtn.addEventListener('click', async () => {
+      if (confirm('Are you sure you want to delete this event?')) {
+        await handlers?.onDelete?.(eventId);
+      }
+    });
+    footer.appendChild(deleteBtn);
   }
 
   if (!isCreator) {

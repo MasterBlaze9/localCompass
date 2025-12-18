@@ -236,6 +236,29 @@ function createPostCard(post, currentUser = null, handlers = {}) {
     editBtn.style.padding = '10px 12px';
     editBtn.style.whiteSpace = 'nowrap';
     footer.appendChild(editBtn);
+
+    const deleteBtn = createButton({
+      label: 'Delete',
+      className: 'lc-button',
+      onClick: async () => {
+        const confirmed = confirm('Are you sure you want to delete this post? This action cannot be undone.');
+        if (!confirmed) return;
+        try {
+          deleteBtn.disabled = true;
+          await handlers?.onDelete?.(post.id);
+        } catch (err) {
+          alert('Failed to delete post.');
+          deleteBtn.disabled = false;
+        }
+      }
+    });
+    deleteBtn.style.flex = '1';
+    deleteBtn.style.minWidth = '0';
+    deleteBtn.style.padding = '10px 12px';
+    deleteBtn.style.whiteSpace = 'nowrap';
+    deleteBtn.style.backgroundColor = '#ef4444';
+    deleteBtn.style.color = '#fff';
+    footer.appendChild(deleteBtn);
   } else {
     // Check if current user has already accepted this post
     const currentUserName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : '';

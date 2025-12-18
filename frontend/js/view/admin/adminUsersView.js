@@ -6,23 +6,23 @@ import { createGenericList } from '../../components/list/list.js';
 function render(users, onDelete, onAdd) {
     const container = document.querySelector('#container');
     container.innerHTML = '';
-    
+
     const adminDiv = document.createElement('div');
     adminDiv.className = 'admin-container';
-    
+
     // Header
     const header = document.createElement('h1');
     header.textContent = 'Admin Panel - Users Management';
     adminDiv.appendChild(header);
-    
+
     const subtitle = document.createElement('p');
     subtitle.textContent = `Total users: ${users.length}`;
     adminDiv.appendChild(subtitle);
-    
+
     // Navigation buttons
     const nav = createNavButtons();
     adminDiv.appendChild(nav);
-    
+
     // Add User Button
     const addBtn = createButton({
         label: '+ Add New User',
@@ -31,7 +31,7 @@ function render(users, onDelete, onAdd) {
     });
     addBtn.style.marginBottom = '20px';
     adminDiv.appendChild(addBtn);
-    
+
     // Users list mount using list component
     const listMount = document.createElement('div');
     listMount.id = 'admin-users-list-mount';
@@ -51,21 +51,21 @@ function render(users, onDelete, onAdd) {
 function createUserCard(user, onDelete) {
     const card = document.createElement('div');
     card.className = 'post-card';
-    
+
     // User header
     const userHeader = document.createElement('div');
     userHeader.style.marginBottom = '15px';
     userHeader.style.display = 'flex';
     userHeader.style.justifyContent = 'space-between';
     userHeader.style.alignItems = 'center';
-    
+
     const username = document.createElement('h3');
     username.textContent = user.firstName + " " + user.lastName || user.name || 'Unknown User';
     username.style.margin = '0';
-    
+
     userHeader.appendChild(username);
     card.appendChild(userHeader);
-    
+
     // User details
     if (user.email) {
         const email = document.createElement('p');
@@ -74,7 +74,7 @@ function createUserCard(user, onDelete) {
         email.textContent = `📧 ${user.email}`;
         card.appendChild(email);
     }
-    
+
     if (user.apartment || user.apartment_number) {
         const apartment = document.createElement('p');
         apartment.style.color = '#555';
@@ -82,7 +82,7 @@ function createUserCard(user, onDelete) {
         apartment.textContent = `🏠 Apartment ${user.apartment || user.apartment_number}`;
         card.appendChild(apartment);
     }
-    
+
     // Delete button
     const deleteBtn = createButton({
         label: '🗑️ Remove User',
@@ -93,9 +93,9 @@ function createUserCard(user, onDelete) {
     deleteBtn.style.backgroundColor = '#dc3545';
     deleteBtn.style.color = 'white';
     deleteBtn.style.border = 'none';
-    
+
     card.appendChild(deleteBtn);
-    
+
     return card;
 }
 
@@ -105,7 +105,7 @@ function createNavButtons() {
     nav.style.marginBottom = '20px';
     nav.style.display = 'flex';
     nav.style.gap = '10px';
-    
+
     const postsBtn = document.createElement('button');
     postsBtn.textContent = '📝 Posts';
     postsBtn.className = 'lc-button';
@@ -114,7 +114,7 @@ function createNavButtons() {
         const controller = await import('../../controller/adminController.js');
         controller.initPosts({ skipLoading: true });
     };
-    
+
     const eventsBtn = document.createElement('button');
     eventsBtn.textContent = '📅 Events';
     eventsBtn.className = 'lc-button';
@@ -132,17 +132,17 @@ function createNavButtons() {
         const controller = await import('../../controller/adminController.js');
         controller.initReports({ skipLoading: true });
     };
-    
+
     const usersBtn = document.createElement('button');
     usersBtn.textContent = '👥 Users';
     usersBtn.className = 'lc-button lc-button--primary';
     usersBtn.style.padding = '10px 20px';
-    
+
     nav.appendChild(postsBtn);
     nav.appendChild(eventsBtn);
     nav.appendChild(reportsBtn);
     nav.appendChild(usersBtn);
-    
+
     return nav;
 }
 

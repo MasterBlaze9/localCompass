@@ -37,13 +37,15 @@ export async function init() {
         content: form,
         actions: [
           { label: 'Cancel', className: 'lc-button', onClick: (_e, { close }) => close() },
-          { label: 'Create', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
+          {
+            label: 'Create', className: 'lc-button lc-button--primary', onClick: async (_e, { close }) => {
               if (!t.value.trim()) { alert('Title required'); return; }
               await reportService.createReport({ title: t.value.trim(), description: d.value.trim(), userId: me.id, buildingId: me.buildingId });
               close();
               const data = await reportService.getAllReports({ scope: currentScope });
               reportView.render(data, me, handlers, currentScope);
-            } }
+            }
+          }
         ]
       });
     },

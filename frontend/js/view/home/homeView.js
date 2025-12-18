@@ -149,9 +149,6 @@ function createPostsSection(posts) {
 
 function createPostCard(post) {
 
-    console.log('📝 Post data:', post); // ADD THIS LINE
-    console.log('📝 Description:', post.description); // ADD THIS LINE
-
     const card = document.createElement('div');
     card.className = 'post-card';
     card.onclick = () => window.location.href = '/posts';

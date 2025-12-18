@@ -1,6 +1,7 @@
 // Admin Users View - renders users list
 import './admin.css';
 import createButton from '../../components/button/button.js';
+import { createGenericList } from '../../components/list/list.js';
 
 function render(users, onDelete, onAdd) {
     const container = document.querySelector('#container');
@@ -31,23 +32,19 @@ function render(users, onDelete, onAdd) {
     addBtn.style.marginBottom = '20px';
     adminDiv.appendChild(addBtn);
     
-    // Users list
-    const usersList = document.createElement('div');
-    usersList.className = 'posts-list';
-    
-    if (users.length === 0) {
-        const emptyMsg = document.createElement('p');
-        emptyMsg.textContent = 'No users found.';
-        usersList.appendChild(emptyMsg);
-    } else {
-        users.forEach(user => {
-            const userCard = createUserCard(user, onDelete);
-            usersList.appendChild(userCard);
-        });
-    }
-    
-    adminDiv.appendChild(usersList);
+    // Users list mount using list component
+    const listMount = document.createElement('div');
+    listMount.id = 'admin-users-list-mount';
+    adminDiv.appendChild(listMount);
+
     container.appendChild(adminDiv);
+
+    const listComponent = createGenericList('admin-users-list-mount', {
+        renderItem: (u) => createUserCard(u, onDelete)
+    });
+    listComponent.updateData(Promise.resolve(users));
+    const ul = document.querySelector('#admin-users-list-mount .lc-list-group');
+    if (ul) ul.classList.add('lc-cols-3');
 }
 
 // Create a single user card
@@ -115,7 +112,7 @@ function createNavButtons() {
     postsBtn.style.padding = '10px 20px';
     postsBtn.onclick = async () => {
         const controller = await import('../../controller/adminController.js');
-        controller.init();
+        controller.initPosts({ skipLoading: true });
     };
     
     const eventsBtn = document.createElement('button');
@@ -124,7 +121,16 @@ function createNavButtons() {
     eventsBtn.style.padding = '10px 20px';
     eventsBtn.onclick = async () => {
         const controller = await import('../../controller/adminController.js');
-        controller.initEvents();
+        controller.initEvents({ skipLoading: true });
+    };
+
+    const reportsBtn = document.createElement('button');
+    reportsBtn.textContent = '🚩 Reports';
+    reportsBtn.className = 'lc-button';
+    reportsBtn.style.padding = '10px 20px';
+    reportsBtn.onclick = async () => {
+        const controller = await import('../../controller/adminController.js');
+        controller.initReports({ skipLoading: true });
     };
     
     const usersBtn = document.createElement('button');
@@ -134,6 +140,7 @@ function createNavButtons() {
     
     nav.appendChild(postsBtn);
     nav.appendChild(eventsBtn);
+    nav.appendChild(reportsBtn);
     nav.appendChild(usersBtn);
     
     return nav;

@@ -36,6 +36,9 @@ function render(posts, onDelete) {
     const listComponent = createGenericList('admin-posts-list-mount', {
         renderItem: (post) => createPostCard(post, onDelete)
     });
+    // force 2 columns for posts
+    const ul = document.querySelector('#admin-posts-list-mount .lc-list-group');
+    if (ul) ul.classList.add('lc-cols-2');
 
     // Load data into list
     listComponent.updateData(Promise.resolve(posts));
@@ -121,12 +124,12 @@ function createPostCard(post, onDelete) {
 
     const location = document.createElement('span');
     location.className = 'post-location';
-    location.textContent = `📍 ${post.location || 'No location'}`;
+    location.textContent = `📍 ${resolveLocation(post)}`;
     footer.appendChild(location);
 
     const responses = document.createElement('span');
     responses.className = 'post-responses';
-    responses.textContent = `💬 ${post.responses || 0} responses`;
+    responses.textContent = `💬 ${resolveResponsesCount(post)} responses`;
     footer.appendChild(responses);
 
     card.appendChild(footer);
@@ -138,7 +141,7 @@ function createPostCard(post, onDelete) {
     const deleteBtn = createButton({
         label: '🗑️ Delete',
         className: 'lc-button',
-        onClick: () => onDelete(post.post_id)
+        onClick: () => onDelete(post.id)
     });
     deleteBtn.style.backgroundColor = '#dc3545';
     deleteBtn.style.color = 'white';
@@ -217,6 +220,43 @@ function getCategoryColor(category) {
     return colors[category] || '#757575';
 }
 
+// Normalize post location across possible fields
+function resolveLocation(post) {
+    const candidates = [
+        post.location,
+        post.location_name,
+        post.address,
+        post.place,
+        post.area,
+        post.buildingName // fallback to building name from backend
+    ];
+    for (const c of candidates) {
+        if (!c) continue;
+        const val = typeof c === 'string' ? c : (c.name || c.title || c.label);
+        if (val && String(val).trim()) return String(val).trim();
+    }
+    return 'No location';
+}
+
+// Normalize post responses/comments count across fields
+function resolveResponsesCount(post) {
+    const candidates = [
+        post.responses,
+        post.response_count,
+        post.responses_count,
+        post.acceptancesCount, // backend-provided count
+        post.comments,
+        post.comments_count,
+        post.comment_count
+    ];
+    for (const c of candidates) {
+        if (Array.isArray(c)) return c.length;
+        const n = Number(c);
+        if (Number.isFinite(n)) return n;
+    }
+    return 0;
+}
+
 // Create navigation buttons
 function createNavButtons() {
     const nav = document.createElement('div');
@@ -230,7 +270,7 @@ function createNavButtons() {
     postsBtn.style.padding = '10px 20px';
     postsBtn.onclick = async () => {
         const controller = await import('../../controller/adminController.js');
-        controller.init({ skipLoading: true });
+        controller.initPosts({ skipLoading: true });
     };
 
     const eventsBtn = document.createElement('button');
@@ -238,12 +278,19 @@ function createNavButtons() {
     eventsBtn.className = 'lc-button';
     eventsBtn.style.padding = '10px 20px';
     eventsBtn.onclick = async () => {
-        // Import and call initEvents
         const controller = await import('../../controller/adminController.js');
         controller.initEvents({ skipLoading: true });
     };
 
-    // Add Users button
+    const reportsBtn = document.createElement('button');
+    reportsBtn.textContent = '🚩 Reports';
+    reportsBtn.className = 'lc-button';
+    reportsBtn.style.padding = '10px 20px';
+    reportsBtn.onclick = async () => {
+        const controller = await import('../../controller/adminController.js');
+        controller.initReports({ skipLoading: true });
+    };
+
     const usersBtn = document.createElement('button');
     usersBtn.textContent = '👥 Users';
     usersBtn.className = 'lc-button';
@@ -255,6 +302,7 @@ function createNavButtons() {
 
     nav.appendChild(postsBtn);
     nav.appendChild(eventsBtn);
+    nav.appendChild(reportsBtn);
     nav.appendChild(usersBtn);
 
     return nav;

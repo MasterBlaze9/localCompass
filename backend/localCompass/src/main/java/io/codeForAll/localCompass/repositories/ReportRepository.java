@@ -7,9 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ReportRepository {
-
-    List<Report> findByBuildingId(Long buildingId);
-    List<Report> findByBuildingIdAndStatus(Long buildingId, ReportStatus status);
-    List<Report> findByUserId(Long userId);
+public interface ReportRepository extends org.springframework.data.jpa.repository.JpaRepository<Report, Long> {
+    java.util.List<Report> findByBuildingId(Long buildingId);
+    java.util.List<Report> findByBuildingIdAndStatusOrderByCreatedAtDesc(Long buildingId, ReportStatus status);
+    java.util.List<Report> findByUserId(Long userId);
 }

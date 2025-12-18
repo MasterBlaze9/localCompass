@@ -10,6 +10,7 @@ export async function init() {
     const handlers = {
       onFilter: (s) => load(s),
       onAccept: async (postId) => { if (!me?.id) { alert('Login required'); return; } await postService.acceptPost(postId, me.id); await load(scope); },
+      onUnaccept: async (postId) => { if (!me?.id) { alert('Login required'); return; } await postService.removeAcceptance(postId); await load(scope); },
       onViewAcceptances: async (postId, cb) => { const list = await postService.listAcceptances(postId); cb(list); },
       onEdit: async (postId, data) => { if (!me?.id) { alert('Login required'); return; } await postService.updatePost(postId, data); await load(scope); }
     };

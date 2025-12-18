@@ -2,7 +2,7 @@
 .lc-list-group {
     display: grid;
     /* Desktop: 4 columns of equal width */
-    grid-template-columns: repeat(4, 1fr); 
+    grid-template-columns: repeat(2, 1fr); 
     gap: 20px;
     padding: 0 15px;
     list-style: none;
@@ -31,18 +31,13 @@
 
 /* --- Responsive Breakpoints --- */
 
-/* Medium Screens (Laptops/Tablets): 2 columns */
-@media (max-width: 1200px) {
-    .lc-list-group {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
+/* Modifiers for dynamic column counts */
+.lc-list-group.lc-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.lc-list-group.lc-cols-3 { grid-template-columns: repeat(3, 1fr); }
 
 /* Small Screens (Mobile): 1 column */
 @media (max-width: 600px) {
-    .lc-list-group {
-        grid-template-columns: 1fr;
-    }
+    .lc-list-group { grid-template-columns: 1fr !important; }
 }
 
 /* Avatar & Metadata Styles */

@@ -11,6 +11,10 @@ export default {
     path: '/posts',
     controller: 'postController'
   },
+  reports: {
+    path: '/reports',
+    controller: 'reportController'
+  },
   admin: {
     path: '/admin',
     controller: 'adminController'

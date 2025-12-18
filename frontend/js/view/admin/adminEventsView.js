@@ -1,6 +1,7 @@
 // Admin Events View - renders events list
 import './admin.css';
 import createButton from '../../components/button/button.js';
+import { createGenericList } from '../../components/list/list.js';
 
 // Normalize attendee data across API shapes and fall back to zero
 function resolveAttendeeCount(event) {
@@ -9,13 +10,14 @@ function resolveAttendeeCount(event) {
         event.attendees_count,
         event.attendeesCount,
         event.attendee_count,
-        event.attendeeCount
+        event.attendeeCount,
+        event.attendeesCount // backend-provided count
     ];
 
     // If an array is provided, dedupe by user ID and count only active statuses
     for (const candidate of candidates) {
         if (Array.isArray(candidate)) {
-            const activeStatuses = new Set(['joined', 'attending', 'accepted']);
+            const activeStatuses = new Set(['joined', 'attending', 'accepted', 'present']);
             const declinedStatuses = new Set(['declined', 'cancelled', 'canceled', 'removed']);
             const uniqueIds = new Set();
             let count = 0;
@@ -116,29 +118,25 @@ function render(events, onDelete) {
     const nav = createNavButtons();
     adminDiv.appendChild(nav);
 
-    // Events list
-    const eventsList = document.createElement('div');
-    eventsList.className = 'posts-list';
+    // Events list mount using list component
+    const listMount = document.createElement('div');
+    listMount.id = 'admin-events-list-mount';
+    adminDiv.appendChild(listMount);
 
-    if (events.length === 0) {
-        const emptyMsg = document.createElement('p');
-        emptyMsg.textContent = 'No events found.';
-        eventsList.appendChild(emptyMsg);
-    } else {
-        events.forEach(event => {
-            const eventCard = createEventCard(event, onDelete);
-            eventsList.appendChild(eventCard);
-        });
-    }
-
-    adminDiv.appendChild(eventsList);
     container.appendChild(adminDiv);
+
+    const listComponent = createGenericList('admin-events-list-mount', {
+        renderItem: (ev) => createEventCard(ev, onDelete)
+    });
+    listComponent.updateData(Promise.resolve(events));
+    const ul = document.querySelector('#admin-events-list-mount .lc-list-group');
+    if (ul) ul.classList.add('lc-cols-2');
 }
 
 // Create a single event card element
 function createEventCard(event, onDelete) {
-    const card = document.createElement('div');
-    card.className = 'post-card';
+    const card = document.createElement('li');
+    card.className = 'lc-card event-card';
 
     // Organizer info
     const organizerInfo = document.createElement('div');
@@ -191,7 +189,7 @@ function createEventCard(event, onDelete) {
     const deleteBtn = createButton({
         label: '🗑️ Delete',
         className: 'lc-button',
-        onClick: () => onDelete(event.event_id)
+        onClick: () => onDelete(event.id)
     });
     deleteBtn.style.marginTop = '10px';
     deleteBtn.style.backgroundColor = '#dc3545';
@@ -231,13 +229,22 @@ function createNavButtons() {
     postsBtn.onclick = async () => {
         // Import and call init (posts)
         const controller = await import('../../controller/adminController.js');
-        controller.init({ skipLoading: true });
+        controller.initPosts({ skipLoading: true });
     };
 
     const eventsBtn = document.createElement('button');
     eventsBtn.textContent = '📅 Events';
     eventsBtn.className = 'lc-button lc-button--primary';
     eventsBtn.style.padding = '10px 20px';
+
+    const reportsBtn = document.createElement('button');
+    reportsBtn.textContent = '🚩 Reports';
+    reportsBtn.className = 'lc-button';
+    reportsBtn.style.padding = '10px 20px';
+    reportsBtn.onclick = async () => {
+        const controller = await import('../../controller/adminController.js');
+        controller.initReports({ skipLoading: true });
+    };
 
     // NEW: Add Users button
     const usersBtn = document.createElement('button');
@@ -251,6 +258,7 @@ function createNavButtons() {
 
     nav.appendChild(postsBtn);
     nav.appendChild(eventsBtn);
+    nav.appendChild(reportsBtn);
     nav.appendChild(usersBtn);
 
     return nav;

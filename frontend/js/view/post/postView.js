@@ -73,8 +73,10 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
   container.appendChild(listMount);
 
   // Create the list component
+  // Ensure handlers carries current scope for item renderer
+  const scopedHandlers = { ...handlers, currentScope };
   const listComponent = createGenericList('posts-list-mount', {
-    renderItem: (post) => createPostCard(post, currentUser, handlers)
+    renderItem: (post) => createPostCard(post, currentUser, scopedHandlers, currentScope)
   });
 
   // Load data into list
@@ -233,15 +235,26 @@ function createPostCard(post, currentUser = null, handlers = {}) {
     const hasAccepted = (post.acceptedByMe === true) || (post.acceptances && post.acceptances.some(a => a.userName === currentUserName));
 
     const acceptBtn = createButton({
-      label: hasAccepted ? 'Already Accepted' : 'Accept',
-      className: `lc-button${hasAccepted ? '' : ' lc-button--primary'}`,
-      onClick: async () => { if (!hasAccepted) { await handlers?.onAccept?.(post.id); } },
-      disabled: hasAccepted
+      label: (hasAccepted && (handlers?.currentScope ?? currentScope ?? 'mine') === 'accepted') ? 'Unaccept' : (hasAccepted ? 'Accepted' : 'Accept'),
+      className: `lc-button${hasAccepted && (handlers?.currentScope ?? currentScope ?? 'mine') !== 'accepted' ? '' : ' lc-button--primary'}`,
+      onClick: async () => {
+        const sc = handlers?.currentScope ?? currentScope ?? 'mine';
+        if (!hasAccepted) {
+          await handlers?.onAccept?.(post.id);
+        } else if (sc === 'accepted') {
+          await handlers?.onUnaccept?.(post.id);
+        }
+      },
+      disabled: hasAccepted && (handlers?.currentScope ?? currentScope ?? 'mine') !== 'accepted'
     });
     acceptBtn.style.flex = '1';
     acceptBtn.style.minWidth = '0';
     acceptBtn.style.padding = '10px 12px';
     acceptBtn.style.whiteSpace = 'nowrap';
+    if (hasAccepted && (handlers?.currentScope ?? currentScope ?? 'mine') === 'accepted') {
+      acceptBtn.style.backgroundColor = '#dc3545';
+      acceptBtn.style.color = '#fff';
+    }
     footer.appendChild(acceptBtn);
   }
 

@@ -88,6 +88,16 @@ const eventService = {
         }
     },
 
+    async removeAttendance(eventId, userId) {
+        const url = userId ? `${BASE_URL}/events/${eventId}/attendees/${userId}` : `${BASE_URL}/events/${eventId}/attendees`;
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', ...auth.getAuthHeader() }
+        });
+        if (response.status === 204) return true;
+        return this.handleResponse(response);
+    },
+
     // Common response handler
     async handleResponse(response) {
         const data = await response.json();

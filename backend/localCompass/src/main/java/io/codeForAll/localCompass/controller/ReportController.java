@@ -42,12 +42,12 @@ public class ReportController {
         Report r = new Report();
         r.setUser(user);
         r.setBuilding(building);
+        r.setTitle(dto.getTitle());
         r.setDescription(dto.getDescription());
         r.setLocationDetails(dto.getLocationDetails());
         r.setStatus(ReportStatus.OPEN);
         Report saved = reportRepository.save(r);
         ReportResponseDTO resp = new ReportResponseDTO(saved);
-        resp.setTitle(dto.getTitle());
         return ResponseEntity.ok(resp);
     }
 
@@ -56,12 +56,12 @@ public class ReportController {
         Report r = reportRepository.findById(id).orElseThrow(() -> new RuntimeException("Report not found"));
         User auth = getCurrentUser();
         if (!auth.isAdmin() && !r.getUser().getId().equals(auth.getId())) throw new RuntimeException("Forbidden");
+        if (dto.getTitle() != null) r.setTitle(dto.getTitle());
         if (dto.getDescription() != null) r.setDescription(dto.getDescription());
         if (dto.getLocationDetails() != null) r.setLocationDetails(dto.getLocationDetails());
         if (dto.getStatus() != null) r.setStatus(dto.getStatus());
         Report updated = reportRepository.save(r);
         ReportResponseDTO resp = new ReportResponseDTO(updated);
-        resp.setTitle(dto.getTitle());
         return ResponseEntity.ok(resp);
     }
 

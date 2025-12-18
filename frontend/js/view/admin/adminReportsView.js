@@ -7,7 +7,7 @@ function render(reports, onDelete) {
   container.innerHTML = '';
 
   const adminDiv = document.createElement('div');
-  adminDiv.className = 'admin-container';
+  adminDiv.className = 'admin-view';
 
   const header = document.createElement('h1');
   header.textContent = 'Admin Panel - Reports Management';
@@ -34,7 +34,7 @@ function render(reports, onDelete) {
 
 function createReportCard(report, onDelete) {
   const card = document.createElement('li');
-  card.className = 'lc-card post-card';
+  card.className = 'lc-card report-card';
 
   const header = document.createElement('div');
   header.className = 'post-header';

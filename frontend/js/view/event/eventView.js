@@ -20,6 +20,8 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
   // --- Header ---
   const header = document.createElement('h1');
   header.textContent = 'Events';
+  header.style.textAlign = 'center';
+  header.style.marginBottom = '24px';
   container.appendChild(header);
 
   // --- Filter Tabs ---
@@ -65,6 +67,7 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
 function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet = null, currentScope = 'mine') {
   const card = document.createElement('li');
   card.className = 'lc-card event-card';
+  card.style = " word-wrap: break-word;"
 
   // Title
   const t = document.createElement('h3');
@@ -169,7 +172,7 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
 
     const editBtn = document.createElement('button');
     editBtn.textContent = 'Edit';
-    editBtn.className = 'lc-button';
+    editBtn.className = 'lc-button lc-button--primary';
     editBtn.style.flex = '1';
     editBtn.style.minWidth = '0';
     editBtn.style.padding = '10px 12px';
@@ -198,7 +201,13 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
       dtInput.className = 'modal-input';
       dtInput.value = formatDateTimeLocal(ev.datetime);
 
-      form.append(titleInput, descInput, locInput, dtInput);
+      const dtError = document.createElement('div');
+      dtError.style.color = 'red';
+      dtError.style.fontSize = '12px';
+      dtError.style.marginTop = '4px';
+      dtError.style.display = 'none';
+
+      form.append(titleInput, descInput, locInput, dtInput, dtError);
 
       openModal({
         title: 'Edit Event',
@@ -213,6 +222,24 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
                 alert('Title required');
                 return;
               }
+              // Validate that event datetime is not in the past
+              if (dtInput.value) {
+                const eventDateTime = new Date(dtInput.value);
+                const now = new Date();
+                if (eventDateTime < now) {
+                  dtInput.style.borderColor = 'red';
+                  dtInput.style.backgroundColor = '#ffe6e6';
+                  dtError.textContent = 'Event date cannot be in the past';
+                  dtError.style.display = 'block';
+                  return;
+                }
+              }
+
+              // Reset styling if valid
+              dtInput.style.borderColor = '';
+              dtInput.style.backgroundColor = '';
+              dtError.style.display = 'none';
+
               await handlers?.onEdit?.(eventId, {
                 title: titleInput.value.trim(),
                 description: descInput.value,
@@ -226,6 +253,22 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
       });
     });
     footer.appendChild(editBtn);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.className = 'lc-button';
+    deleteBtn.style.flex = '1';
+    deleteBtn.style.minWidth = '0';
+    deleteBtn.style.padding = '10px 12px';
+    deleteBtn.style.whiteSpace = 'nowrap';
+    deleteBtn.style.backgroundColor = '#dc3545';
+    deleteBtn.style.color = '#fff';
+    deleteBtn.addEventListener('click', async () => {
+      if (confirm('Are you sure you want to delete this event?')) {
+        await handlers?.onDelete?.(eventId);
+      }
+    });
+    footer.appendChild(deleteBtn);
   }
 
   if (!isCreator) {
@@ -236,10 +279,14 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
     attendBtn.style.minWidth = '0';
     attendBtn.style.padding = '10px 12px';
     attendBtn.style.whiteSpace = 'nowrap';
+    attendBtn.style.backgroundColor = '#2563eb';
+    attendBtn.style.color = '#fff';
+
     if (isAttending && currentScope === 'attending') {
       attendBtn.style.backgroundColor = '#dc3545';
       attendBtn.style.color = '#fff';
     }
+
     attendBtn.disabled = isAttending && currentScope !== 'attending';
     attendBtn.addEventListener('click', async () => {
       if (!isAttending) {

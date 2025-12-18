@@ -97,8 +97,17 @@ export function init() {
         window.location.href = '/';
       })
       .catch((err) => {
+        // Clear stored auth token
         auth.clearAuth();
-        show(globalErr, err?.message || 'Login failed');
+        // Normalize network/fetch errors to a friendly message for users
+        // Browsers often surface network failures as 'Failed to fetch' (TypeError)
+        console.error('Login error:', err);
+        let message = err?.message || 'Login failed';
+        if (message === 'Failed to fetch') {
+          // Most commonly this appears when the server rejects the request (CORS/preflight) or credentials are wrong
+          message = 'Invalid credentials';
+        }
+        show(globalErr, message);
       });
   });
 }

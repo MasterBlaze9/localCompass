@@ -1,6 +1,7 @@
 package io.codeForAll.localCompass.config;
 
 import io.codeForAll.localCompass.repositories.UserRepository;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,6 +29,8 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
+        // Return JSON 401 instead of triggering browser's basic-auth popup
+        .exceptionHandling(ex -> ex.authenticationEntryPoint(new io.codeForAll.localCompass.config.RestAuthenticationEntryPoint()))
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
@@ -40,5 +43,10 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return new JpaUserDetailsService(userRepository);
+    }
+
+    @Bean
+    public AuthenticationEntryPoint restAuthEntryPoint() {
+        return new RestAuthenticationEntryPoint();
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,12 @@ public class EventController {
         if (!authUser.isAdmin() && !authUser.getId().equals(dto.getCreatorId())) {
             throw new RuntimeException("Forbidden");
         }
+        
+        // Validate that event datetime is not in the past
+        if (dto.getDatetime() != null && dto.getDatetime().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Event date cannot be in the past");
+        }
+        
         User creator = userRepository.findById(dto.getCreatorId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Building building = buildingRepository.findById(dto.getBuildingId())
@@ -68,6 +75,11 @@ public class EventController {
         User authUser = getCurrentUser();
         if (!authUser.isAdmin() && !event.getCreator().getId().equals(authUser.getId())) {
             throw new RuntimeException("Forbidden");
+        }
+
+        // Validate that event datetime is not in the past
+        if (dto.getDatetime() != null && dto.getDatetime().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Event date cannot be in the past");
         }
 
         if (dto.getTitle() != null) event.setTitle(dto.getTitle());

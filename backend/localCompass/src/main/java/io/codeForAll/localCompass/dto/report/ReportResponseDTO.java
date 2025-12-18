@@ -11,14 +11,16 @@ public class ReportResponseDTO {
     private String description;
     private ReportStatus status;
     private LocalDateTime createdAt;
+    private Long userId;
 
     public ReportResponseDTO() {}
     public ReportResponseDTO(Report r) {
         this.id = r.getId();
         this.description = r.getDescription();
-        this.title = r.getDescription() != null ? r.getDescription().split("\n")[0] : null;
+        this.title = r.getTitle();
         this.status = r.getStatus();
         this.createdAt = r.getCreatedAt();
+        this.userId = r.getUser() != null ? r.getUser().getId() : null;
     }
 
     public Long getId() { return id; }
@@ -31,4 +33,6 @@ public class ReportResponseDTO {
     public void setStatus(ReportStatus status) { this.status = status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 }

@@ -24,13 +24,18 @@ export async function init() {
 
   const handlers = {
     onFilter: async (scope) => {
-      currentScope = scope;
-      const [newItems, attendingRes] = await Promise.all([
-        eventService.getAllEvents({ scope }),
-        eventService.getAllEvents({ scope: 'attending' })
-      ]);
-      attendingIdSet = new Set((attendingRes || []).map(ev => (ev.id ?? ev.event_id ?? ev.eventId)));
-      eventView.render(newItems, me, handlers, currentScope, attendingIdSet);
+      try {
+        currentScope = scope;
+        const [newItems, attendingRes] = await Promise.all([
+          eventService.getAllEvents({ scope }),
+          eventService.getAllEvents({ scope: 'attending' })
+        ]);
+        attendingIdSet = new Set((attendingRes || []).map(ev => (ev.id ?? ev.event_id ?? ev.eventId)));
+        eventView.render(newItems, me, handlers, currentScope, attendingIdSet);
+      } catch (err) {
+        console.error('Filter error:', err);
+        alert('Failed to load events');
+      }
     },
     onCreate: () => {
       if (!me?.id) { alert('Login required'); return; }
@@ -98,6 +103,22 @@ export async function init() {
       ]);
       attendingIdSet = new Set((attendingRes || []).map(ev => (ev.id ?? ev.event_id ?? ev.eventId)));
       eventView.render(newItems, me, handlers, currentScope, attendingIdSet);
+    },
+    onDelete: async (eventId) => {
+      if (!me?.id) return alert('Login required');
+      try {
+        await eventService.deleteEvent(eventId);
+        alert('Event deleted successfully');
+        const [newItems, attendingRes] = await Promise.all([
+          eventService.getAllEvents({ scope: currentScope }),
+          eventService.getAllEvents({ scope: 'attending' })
+        ]);
+        attendingIdSet = new Set((attendingRes || []).map(ev => (ev.id ?? ev.event_id ?? ev.eventId)));
+        eventView.render(newItems, me, handlers, currentScope, attendingIdSet);
+      } catch (error) {
+        console.error('Delete error:', error);
+        alert('Failed to delete event');
+      }
     }
   };
 

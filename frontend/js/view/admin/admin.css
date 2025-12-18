@@ -1,4 +1,4 @@
-/* Admin Panel Styles - Unified with Post/Event Styles */
+/* Admin Panel Styles - Unified and Complete */
 
 /* ===================================
    CONTAINER & LAYOUT
@@ -26,7 +26,31 @@
 }
 
 /* ===================================
-   LISTS - MATCHING POST.CSS/EVENT.CSS
+   NAVIGATION
+   =================================== */
+
+.admin-nav {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.admin-nav .lc-button {
+    padding: 10px 20px;
+}
+
+/* ===================================
+   ADD BUTTON
+   =================================== */
+
+.admin-add-button {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* ===================================
+   LISTS
    =================================== */
 
 .posts-list {
@@ -39,10 +63,11 @@
 }
 
 /* ===================================
-   CARDS - EXACT MATCH WITH POST.CSS
+   CARDS - UNIFIED
    =================================== */
 
-.post-card {
+.post-card,
+.event-card {
     background: #ffffff;
     padding: 24px;
     border-radius: 16px;
@@ -53,16 +78,16 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
-    height: 100%;
 }
 
-.post-card:hover {
+.post-card:hover,
+.event-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 /* ===================================
-   HEADER SECTION
+   POST HEADER
    =================================== */
 
 .post-header {
@@ -108,7 +133,76 @@
 }
 
 /* ===================================
-   STATUS BADGES
+   EVENT SPECIFIC
+   =================================== */
+
+.event-header {
+    margin-bottom: 10px;
+}
+
+.event-organizer {
+    font-weight: 700;
+    color: #1a1a1b;
+}
+
+.event-date {
+    color: #666;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.event-title {
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1b;
+    word-break: break-word;
+}
+
+.event-description {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    margin: 0;
+}
+
+.event-footer {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.event-actions {
+    margin-top: 10px;
+}
+
+/* ===================================
+   USER CARD SPECIFIC
+   =================================== */
+
+.user-header {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-header h3 {
+    margin: 0;
+}
+
+.user-detail {
+    color: #555;
+    margin: 5px 0;
+}
+
+/* ===================================
+   BADGES
    =================================== */
 
 .status-badge {
@@ -134,10 +228,6 @@
     background-color: #ef4444;
     color: white;
 }
-
-/* ===================================
-   CATEGORY BADGES
-   =================================== */
 
 .category-badge {
     display: inline-block;
@@ -174,7 +264,7 @@
 }
 
 /* ===================================
-   CONTENT - MATCHING POST.CSS
+   CONTENT
    =================================== */
 
 .post-title {
@@ -182,6 +272,7 @@
     font-size: 18px;
     font-weight: 700;
     color: #1a1a1b;
+    word-break: break-word;
 }
 
 .post-description {
@@ -190,11 +281,12 @@
     color: #475569;
     line-height: 1.5;
     word-break: break-word;
+    overflow-wrap: break-word;
     white-space: pre-wrap;
 }
 
 /* ===================================
-   FOOTER - MATCHING POST.CSS
+   FOOTER
    =================================== */
 
 .post-footer {
@@ -224,7 +316,7 @@
 }
 
 /* ===================================
-   BUTTONS - MATCHING POST.CSS/EVENT.CSS
+   BUTTONS
    =================================== */
 
 .lc-button {
@@ -257,6 +349,17 @@
     background: #1d4ed8;
 }
 
+.lc-button--delete {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    margin-top: 10px;
+}
+
+.lc-button--delete:hover {
+    background-color: #c82333;
+}
+
 .lc-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -274,6 +377,27 @@
 }
 
 /* ===================================
+   ADMIN LIST GRID OVERRIDE
+   =================================== */
+
+#admin-events-list-mount .lc-list-group,
+#admin-posts-list-mount .lc-list-group,
+#admin-reports-list-mount .lc-list-group,
+#admin-users-list-mount .lc-list-group {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+}
+
+/* Users get 3 columns */
+#admin-users-list-mount .lc-list-group {
+    grid-template-columns: repeat(3, 1fr) !important;
+}
+
+/* ===================================
    RESPONSIVE - TABLET
    =================================== */
 
@@ -286,7 +410,8 @@
         font-size: 36px;
     }
     
-    .post-card {
+    .post-card,
+    .event-card {
         padding: 28px;
     }
 }
@@ -304,7 +429,21 @@
         font-size: 40px;
     }
     
-    .post-card {
+    .post-card,
+    .event-card {
         padding: 32px;
+    }
+}
+
+/* ===================================
+   RESPONSIVE - MOBILE
+   =================================== */
+
+@media (max-width: 768px) {
+    #admin-events-list-mount .lc-list-group,
+    #admin-posts-list-mount .lc-list-group,
+    #admin-reports-list-mount .lc-list-group,
+    #admin-users-list-mount .lc-list-group {
+        grid-template-columns: 1fr !important;
     }
 }

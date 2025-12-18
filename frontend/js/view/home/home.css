@@ -1,4 +1,4 @@
-/* Home View Styles - SIMPLIFIED */
+/* Home View Styles - PERFECT SYMMETRY */
 
 /* ===================================
    CONTAINER
@@ -58,28 +58,65 @@
 }
 
 /* ===================================
-   MAIN GRID - Posts + Events Side by Side
+   REPORTS CONTENT - Direct in Section
+   =================================== */
+
+.home-view .reports-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+}
+
+.home-view .report-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+    width: 100%;
+}
+
+.home-view .report-content:hover .post-title {
+    text-decoration: underline;
+}
+
+/* ===================================
+   MAIN GRID - Posts + Events with Equal Heights
    =================================== */
 
 .home-view .home-main-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
+    grid-auto-rows: 1fr;
 }
 
 /* ===================================
-   LISTS INSIDE SECTIONS
+   SECTIONS - Full Height
+   =================================== */
+
+.home-view .posts-section,
+.home-view .events-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* ===================================
+   LISTS - Grid Layout for Equal Heights
    =================================== */
 
 .home-view .posts-list-home,
 .home-view .events-list-home {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
     gap: 16px;
+    flex: 1;
 }
 
 /* ===================================
-   CARDS - Simple and Clean
+   CARDS - Fill Grid Cells
    =================================== */
 
 .home-view .post-card,
@@ -91,30 +128,13 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     cursor: pointer;
     transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .home-view .post-card:hover,
 .home-view .event-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-/* Report Card */
-.home-view .report-card {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #f0f2f5;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-}
-
-.home-view .report-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
@@ -172,7 +192,7 @@
     font-size: 16px;
     font-weight: 700;
     color: #1a1a1b;
-    word-break: break-word; /* Add this */
+    word-break: break-word;
 }
 
 .home-view .post-description {
@@ -180,8 +200,8 @@
     font-size: 14px;
     color: #475569;
     line-height: 1.5;
-    word-break: break-word; /* Add this */
-    overflow-wrap: break-word; /* Add this */
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 /* ===================================
@@ -234,8 +254,33 @@
 }
 
 /* ===================================
-   BUTTONS
+   BUTTONS - PROTECTED FROM CONFLICTS
    =================================== */
+
+.home-view .section-header .lc-button {
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    border: 1px solid #e2e8f0 !important;
+    background: white !important;
+    color: #475569 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: auto !important;
+    min-width: auto !important;
+    max-width: none !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex: none !important;
+}
+
+.home-view .section-header .lc-button:hover {
+    background: #f8fafc !important;
+}
 
 .home-view .lc-button {
     padding: 8px 16px;
@@ -291,12 +336,17 @@
         grid-template-columns: 1fr;
         gap: 24px;
     }
+    
+    .home-view .posts-list-home,
+    .home-view .events-list-home {
+        grid-template-rows: auto auto;
+    }
 
     .home-view .section-header h2 {
         font-size: 20px;
     }
 
-    .home-view .report-card {
+    .home-view .report-content {
         flex-direction: column;
         align-items: flex-start;
     }

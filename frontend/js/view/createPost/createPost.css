@@ -37,12 +37,6 @@
     font-family: 'Inter', sans-serif;
 }
 
-.create-post-btn:hover {
-    background-color: #764ba2;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
-}
-
 .create-post-btn:active {
     transform: translateY(0);
     box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);

@@ -22,11 +22,12 @@ function navigate(path, firstLoad = false) {
 
     setCurrentRoute(route);
 
-  firstLoad
+    firstLoad
         ? history.replaceState(route, '', route.path)
         : history.pushState(route, '', route.path);
 
-    launchController(route.controller)
+    launchController(route.controller);
+    updateActiveNav();
 }
 
 function handlePopState({ state }) {
@@ -55,7 +56,7 @@ async function launchController(controllerName) {
     }
 }
 
-function setAnchorEventListener(){
+function setAnchorEventListener() {
     document.addEventListener('click', (e) => {
         const a = e.target.closest('a');
         if (!a) return;
@@ -68,15 +69,26 @@ function setAnchorEventListener(){
     });
 }
 
-function updateActiveNav(){
+function updateActiveNav() {
     const current = routes.currentPath.path;
+    // Update navbar links
     document.querySelectorAll('nav a.nav-link').forEach(a => {
         if (a.pathname === current) {
             a.classList.add('active');
-            a.setAttribute('aria-current','page');
+            a.setAttribute('aria-current', 'page');
         } else {
             a.classList.remove('active');
             a.removeAttribute('aria-current');
+        }
+    });
+
+    // Update bottom nav items
+    document.querySelectorAll('.bottom-nav-item').forEach(a => {
+        const href = a.getAttribute('href') || a.pathname;
+        if (href === current) {
+            a.classList.add('active');
+        } else {
+            a.classList.remove('active');
         }
     });
 }

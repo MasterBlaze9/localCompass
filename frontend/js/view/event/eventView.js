@@ -20,6 +20,8 @@ function render(items = [], currentUser = null, handlers = {}, currentScope = 'm
   // --- Header ---
   const header = document.createElement('h1');
   header.textContent = 'Events';
+  header.style.textAlign = 'center';
+  header.style.marginBottom = '24px';
   container.appendChild(header);
 
   // --- Filter Tabs ---
@@ -169,7 +171,7 @@ function createEventCard(ev, currentUser = null, handlers = {}, attendingIdSet =
 
     const editBtn = document.createElement('button');
     editBtn.textContent = 'Edit';
-    editBtn.className = 'lc-button';
+    editBtn.className = 'lc-button lc-button--primary';
     editBtn.style.flex = '1';
     editBtn.style.minWidth = '0';
     editBtn.style.padding = '10px 12px';

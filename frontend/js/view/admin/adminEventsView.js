@@ -101,9 +101,7 @@ function render(events, onDelete) {
     const container = document.querySelector('#container');
     container.innerHTML = '';
 
-    // Main wrapper
-    const adminDiv = document.createElement('div');
-    adminDiv.className = 'admin-container';
+
 
     // Header
     const header = document.createElement('h1');
